@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Abby.log
 
-## Getting Started
+個人部落格。Next.js 16 + Tailwind v4 + MDX，靜態產生，部署在 Vercel。
 
-First, run the development server:
+## 開發
+
+需要 Node 22（見 `.nvmrc`）。
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+nvm use
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # 產生靜態頁面
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 寫文章
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+一篇文章 = `src/content/blog/<slug>.mdx`，frontmatter 如下：
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```yaml
+---
+title: "標題"
+date: "2026-07-23"
+summary: "列表頁與 SEO 用的一句話摘要"
+tags: ["ai-workflow", "reflection"]
+canonical: "https://abby-yl-ting.medium.com/..."  # 選填，Medium 原文
+draft: true                                       # 選填，草稿只在 dev 看得到
+---
+```
 
-## Learn More
+圖片放 `public/images/<slug>/`，內文用 `/images/<slug>/01.png` 引用。
 
-To learn more about Next.js, take a look at the following resources:
+## 標籤
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+三層，定義在 `src/lib/site.ts`：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 主題（藍）：`ai-workflow` `design-thinking` `tools` `career` `lifestyle`
+- 類型（綠）：`tutorial` `reflection` `case-study` `experiment` `mindset`
+- 工具（橙）：`claude` `figma` `video`
 
-## Deploy on Vercel
+新增標籤要同步加進 `tagGroups`，否則顏色會退回預設藍。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 設計
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+色彩／字體沿用個人 Dashboard（`~/memory-dashboard/index.html`），token 定義在 `src/app/globals.css`。
+icon 用 [Lucide](https://lucide.dev)（ISC 授權）。
+
+## 結構
+
+```
+src/
+├── app/            # 路由：/、/blog、/blog/[slug]、/about、/feed.xml、sitemap、robots
+├── components/     # Header / Footer / PostCard / TagPill / Toc / Mdx / BlogBrowser（搜尋）
+├── lib/            # posts.ts（讀 MDX）、site.ts（站台設定與標籤）、format.ts
+└── content/blog/   # 文章
+```
+
+搜尋是純前端比對（`BlogBrowser`），索引在 build 時就備好，不打任何 API。
