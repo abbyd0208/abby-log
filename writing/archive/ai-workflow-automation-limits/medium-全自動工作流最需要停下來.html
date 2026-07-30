@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我做的 AI 設計工作流叫「全自動」——它最需要的其實是停下來</title>
+<style>
+  :root{
+    --accent:#00A2C7; --accent-d:#00718D; --accent-soft:#F2FAFB; --accent-line:#DEF7F9;
+    --ink:#1a1a1a; --body:#242424; --soft:#6B6B6B; --faint:#8c8c8c;
+    --line:#e9e9e9; --line-2:#f2f2f2; --bg:#ffffff;
+    --warn-bg:#FFF8E6; --warn-line:#F2D98A; --warn-ink:#8a5a00;
+    --good-bg:#ECF8F0; --good-line:#BFE6CC; --good-ink:#1d7a48;
+    --swap-bg:#F4F6F8; --swap-line:#dfe4e8; --swap-ink:#465a63;
+    --quote:#00718D;
+    --serif: "Source Serif Pro", Charter, Georgia, "Noto Serif TC", "Songti TC", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+  body{background:var(--bg); color:var(--body); font-family:var(--sans); line-height:1.4}
+
+  /* ---------- top bar ---------- */
+  .topbar{border-bottom:1px solid var(--line); position:sticky; top:0; background:rgba(255,255,255,.92); backdrop-filter:blur(6px); z-index:50}
+  .topbar .inner{max-width:1000px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:10px; font-size:14px; color:var(--soft)}
+  .topbar .dot{width:7px; height:7px; border-radius:50%; background:var(--accent)}
+  .topbar b{color:var(--ink); font-weight:600}
+
+  /* ---------- article shell ---------- */
+  .wrap{max-width:680px; margin:0 auto; padding:0 24px}
+  .hero{padding:64px 0 8px}
+  .kicker{font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-d); font-weight:700; margin-bottom:20px}
+  h1{font-family:var(--serif); font-size:42px; line-height:1.18; letter-spacing:-.01em; color:var(--ink); font-weight:700; margin-bottom:18px}
+  .sub{font-family:var(--serif); font-size:21px; line-height:1.45; color:var(--soft); font-weight:400; margin-bottom:34px}
+
+  .byline{display:flex; align-items:center; gap:14px; padding:6px 0 28px; border-bottom:1px solid var(--line); margin-bottom:8px}
+  .avatar{width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-d)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex-shrink:0}
+  .byline .meta{font-size:14px; line-height:1.5}
+  .byline .meta .name{color:var(--ink); font-weight:600}
+  .byline .meta .dets{color:var(--faint)}
+
+  /* ---------- body type ---------- */
+  .body{padding:18px 0 40px}
+  .body p{font-family:var(--serif); font-size:20px; line-height:1.7; color:var(--body); margin:0 0 28px}
+  .body h2{font-family:var(--sans); font-size:28px; line-height:1.3; letter-spacing:-.01em; color:var(--ink); font-weight:700; margin:54px 0 8px}
+  .body h2 .num{color:var(--accent); font-weight:700}
+  .body h3{font-family:var(--sans); font-size:21px; color:var(--ink); font-weight:650; margin:36px 0 6px}
+  .body strong{font-weight:680; color:var(--ink)}
+  .body em{color:var(--accent-d); font-style:normal; font-weight:600}
+  .body a{color:var(--accent-d)}
+  .lead{font-size:22px !important; color:var(--soft) !important}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.82em; background:#f3f4f5; border:1px solid var(--line); border-radius:5px; padding:1px 6px; color:var(--accent-d)}
+
+  hr.soft{border:0; border-top:1px solid var(--line); margin:48px 0}
+
+  /* ---------- TL;DR ---------- */
+  .tldr{background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:14px; padding:26px 28px; margin:8px 0 40px}
+  .tldr .lab{font-family:var(--sans); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-d); font-weight:700; margin-bottom:12px}
+  .tldr ul{list-style:none; margin:0; padding:0}
+  .tldr li{font-family:var(--sans); font-size:16px; line-height:1.6; color:var(--body); padding-left:24px; position:relative; margin-bottom:10px}
+  .tldr li:last-child{margin-bottom:0}
+  .tldr li::before{content:"→"; position:absolute; left:0; color:var(--accent); font-weight:700}
+
+  /* ---------- glossary ---------- */
+  .gloss{font-family:var(--sans); border:1px dashed var(--swap-line); background:#fbfcfd; border-radius:14px; padding:24px 26px; margin:8px 0 40px}
+  .gloss .lab{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--swap-ink); font-weight:700; margin-bottom:4px}
+  .gloss .lab-sub{font-size:13.5px; color:var(--faint); margin-bottom:16px}
+  .gloss dl{margin:0}
+  .gloss dt{font-size:15.5px; font-weight:700; color:var(--ink); margin-top:14px}
+  .gloss dt:first-of-type{margin-top:0}
+  .gloss dd{font-size:15px; line-height:1.6; color:var(--soft); margin:3px 0 0}
+  .gloss dd b{color:var(--body)}
+
+  /* ---------- pull quote ---------- */
+  blockquote{margin:40px 0; padding:6px 0 6px 26px; border-left:3px solid var(--accent)}
+  blockquote p{font-family:var(--serif); font-size:24px; line-height:1.5; color:var(--quote); font-style:italic; font-weight:500; margin:0}
+
+  /* ---------- callout ---------- */
+  .callout{font-family:var(--sans); border-radius:12px; padding:18px 22px; margin:30px 0; font-size:16px; line-height:1.62}
+  .callout .t{font-weight:700; margin-bottom:6px; font-size:14px; letter-spacing:.02em; display:flex; align-items:center; gap:8px}
+  .callout.good{background:var(--good-bg); border:1px solid var(--good-line)} .callout.good .t{color:var(--good-ink)}
+  .callout p{font-family:var(--sans) !important; font-size:16px !important; margin:0 !important; color:var(--body) !important; line-height:1.62 !important}
+
+  /* ---------- "swap to your tool" block ---------- */
+  .swap{font-family:var(--sans); background:var(--swap-bg); border:1px solid var(--swap-line); border-radius:10px; padding:15px 18px; margin:22px 0 30px; font-size:15px; line-height:1.62}
+  .swap .st{font-size:13px; font-weight:700; color:var(--swap-ink); letter-spacing:.02em; margin-bottom:5px; display:flex; align-items:center; gap:7px}
+  .swap .sb{color:var(--soft)}
+  .swap .sb b{color:var(--body)}
+
+  /* ---------- FLOWCHART (timeline) ---------- */
+  .flow{font-family:var(--sans); margin:40px -40px; padding:38px 36px 34px; border-radius:20px;
+        background:linear-gradient(160deg,#fcfeff 0%,#f4fafb 60%,#eef8fa 100%);
+        border:1px solid var(--accent-line); box-shadow:0 18px 50px -28px rgba(0,45,56,.30), inset 0 1px 0 rgba(255,255,255,.7)}
+  .flow .fhead{text-align:center; margin-bottom:30px}
+  .flow .fk{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:800}
+  .flow .fs{font-size:21px; font-weight:750; color:var(--accent-12,#002D38); margin-top:7px; letter-spacing:-.01em}
+  .flow .fleg{display:inline-flex; flex-wrap:wrap; gap:18px; justify-content:center; margin-top:14px; font-size:12px; color:var(--soft); font-weight:500}
+  .flow .fleg span{display:inline-flex; align-items:center; gap:6px}
+  .flow .fleg i{width:11px; height:11px; border-radius:3px; display:inline-block}
+  .flow .fleg i.c1{background:var(--accent)} .flow .fleg i.c2{background:var(--warn-line); border:1px dashed var(--warn-ink)} .flow .fleg i.c3{background:#36b37e}
+
+  .tl{position:relative}
+  .tl::before{content:""; position:absolute; left:25px; top:18px; bottom:30px; width:2.5px;
+              background:linear-gradient(180deg,var(--accent-7,#84CDDA),var(--accent) 70%,#36b37e); border-radius:2px}
+  .row{position:relative; padding-left:74px; margin-bottom:16px}
+  .row .badge{position:absolute; left:0; top:2px; width:52px; height:52px; border-radius:16px; z-index:2;
+              display:flex; align-items:center; justify-content:center; font-size:22px; background:#fff;
+              border:2px solid var(--accent); box-shadow:0 6px 16px -6px rgba(0,162,199,.45)}
+  .row .badge.green{border-color:#36b37e; box-shadow:0 6px 16px -6px rgba(54,179,126,.5)}
+  .card2{background:#fff; border:1px solid var(--line); border-radius:15px; padding:15px 18px;
+         box-shadow:0 4px 16px -8px rgba(0,45,56,.16); transition:none}
+  .card2 .c-top{font-size:11px; color:var(--accent-d); font-weight:800; letter-spacing:.05em; text-transform:uppercase; margin-bottom:4px}
+  .card2 .c-main{font-size:16px; color:var(--ink); font-weight:680; line-height:1.45}
+  .card2 .c-sub{font-size:13px; color:var(--soft); margin-top:5px; line-height:1.5}
+  .card2.green{border-color:var(--good-line); background:linear-gradient(180deg,#fff,#f3fbf6)}
+  .card2.green .c-top{color:var(--good-ink)}
+
+  /* checkpoint marker on the spine */
+  .gate2{position:relative; padding-left:74px; margin:2px 0 16px}
+  .gate2 .gb{position:absolute; left:11px; top:50%; transform:translateY(-50%); width:30px; height:30px; z-index:2;
+             border-radius:50%; background:var(--warn-bg); border:2px dashed var(--warn-ink);
+             display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--warn-ink)}
+  .gate2 .gp{display:inline-block; background:linear-gradient(180deg,#fffdf4,#fff5da); border:1px solid var(--warn-line);
+             border-radius:11px; padding:10px 15px; box-shadow:0 4px 14px -8px rgba(171,100,0,.4)}
+  .gate2 .gp .gt{font-size:11px; font-weight:800; color:var(--warn-ink); letter-spacing:.04em; text-transform:uppercase; margin-bottom:2px}
+  .gate2 .gp .gm{font-size:13.5px; color:#6b4a00; font-weight:600; line-height:1.4}
+
+  /* three-layer branch block */
+  .layers{display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; margin-top:13px}
+  .layer{border:1px solid var(--accent-line); border-radius:11px; padding:13px 11px; text-align:center; background:linear-gradient(180deg,#fff,#f7fcfd)}
+  .layer .lnum{width:22px; height:22px; border-radius:50%; margin:0 auto 7px; display:flex; align-items:center; justify-content:center;
+               font-size:11px; font-weight:800; color:#fff; background:var(--accent)}
+  .layer .lt{font-size:12.5px; color:var(--ink); font-weight:700; line-height:1.35}
+  .layer .ld{font-size:11px; color:var(--soft); margin-top:5px; line-height:1.45}
+  .layer.l1{border-color:var(--warn-line); background:linear-gradient(180deg,#fff,#fffaf0)} .layer.l1 .lnum{background:var(--warn-ink)}
+  .layer.l3{border-color:#cfd8dc; background:linear-gradient(180deg,#fff,#f7f9fa)} .layer.l3 .lnum{background:#5a6b70}
+
+  /* ---------- step index ---------- */
+  .step-tag{display:inline-flex; align-items:center; gap:9px; font-family:var(--sans); font-size:13px; font-weight:700; color:var(--accent-d); letter-spacing:.04em; margin:34px 0 2px}
+  .step-tag .b{width:26px; height:26px; border-radius:8px; background:var(--accent); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:14px}
+
+  /* ---------- ending ---------- */
+  .end-card{font-family:var(--sans); background:var(--ink); color:#fff; border-radius:16px; padding:34px 32px; margin:30px 0}
+  .end-card h3{color:#fff; font-size:20px; margin-bottom:16px}
+  .end-card ul{list-style:none; padding:0; margin:0}
+  .end-card li{font-size:16px; line-height:1.6; padding-left:26px; position:relative; margin-bottom:12px; color:#e8e8e8}
+  .end-card li::before{content:"✓"; position:absolute; left:0; color:var(--accent); font-weight:700}
+  .end-card li b{color:#fff}
+
+  /* ---------- story hook ---------- */
+  .scene{font-family:var(--serif); font-size:20px; line-height:1.7; color:var(--body); margin:0 0 24px; padding-left:20px; border-left:3px solid var(--line)}
+  .scene .last{color:var(--accent-d); font-weight:600; font-style:italic}
+
+  /* ---------- two-memory comparison ---------- */
+  .memcmp{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:26px 0}
+  .memcol{font-family:var(--sans); border:1px solid var(--line); border-radius:12px; padding:18px 18px; background:#fff}
+  .memcol .mh{font-size:16px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:8px; margin-bottom:3px}
+  .memcol .mfile{font-family:"SF Mono",Menlo,monospace; font-size:11.5px; color:var(--accent-d); margin-bottom:12px}
+  .memcol .mrow{font-size:13.5px; line-height:1.5; margin-bottom:9px; color:var(--soft)}
+  .memcol .mrow b{display:block; font-size:11px; letter-spacing:.04em; color:var(--faint); text-transform:uppercase; font-weight:700; margin-bottom:2px}
+  .memcol .mrow span{color:var(--body)}
+  .memcol.rule{background:#fbfcfd} .memcol.rule .mfile{color:#5a6b70}
+
+  /* ---------- status board mockup ---------- */
+  .board{font-family:var(--sans); border:1px solid var(--line); border-radius:14px; overflow:hidden; margin:30px 0; box-shadow:0 4px 18px -10px rgba(0,45,56,.18)}
+  .board .b-bar{background:var(--ink); color:#fff; padding:11px 18px; font-size:13px; display:flex; align-items:center; gap:8px; letter-spacing:.02em}
+  .board .b-bar .fn{font-family:"SF Mono",Menlo,monospace; color:#7fd9ea; font-weight:600}
+  .board .b-bar .tag2{margin-left:auto; font-size:11px; color:#9aa4a8}
+  .board .b-now{padding:16px 18px; background:var(--accent-soft); border-bottom:1px solid var(--accent-line); font-size:14px; line-height:1.55}
+  .board .b-now .lab2{font-size:11px; font-weight:700; letter-spacing:.06em; color:var(--accent-d); display:block; margin-bottom:4px}
+  .board .b-now b{color:var(--ink)}
+  .board table{width:100%; border-collapse:collapse; font-size:13.5px}
+  .board th{text-align:left; font-size:11px; letter-spacing:.04em; color:var(--faint); font-weight:700; padding:10px 18px; border-bottom:1px solid var(--line); background:#fafafa; text-transform:uppercase}
+  .board td{padding:11px 18px; border-bottom:1px solid var(--line-2); color:var(--body); vertical-align:middle}
+  .board tr:last-child td{border-bottom:0}
+  .board td.bn{font-family:"SF Mono",Menlo,monospace; font-size:12px; color:var(--accent-d)}
+  .board .dotc{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; white-space:nowrap}
+  .board .cdot{width:9px; height:9px; border-radius:50%; flex-shrink:0}
+  .board .cdot.todo{background:#cfd4d8} .board .cdot.doing{background:#f0b429} .board .cdot.done{background:#36b37e}
+  .board .b-diff{padding:15px 18px; background:var(--warn-bg); border-top:1px solid var(--warn-line); font-size:13.5px; line-height:1.6}
+  .board .b-diff .lab2{font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--warn-ink); display:block; margin-bottom:7px}
+  .board .b-diff .d-row{padding-left:18px; position:relative; margin-bottom:6px; color:var(--body)}
+  .board .b-diff .d-row:last-child{margin-bottom:0}
+  .board .b-diff .d-row::before{content:"↳"; position:absolute; left:0; color:var(--warn-ink); font-weight:700}
+  .board .b-diff .d-row s{color:var(--faint)}
+
+  .tags{display:flex; flex-wrap:wrap; gap:8px; margin:36px 0}
+  .tags span{font-family:var(--sans); font-size:13px; color:var(--soft); background:#f4f4f4; border-radius:20px; padding:6px 14px}
+
+  footer{border-top:1px solid var(--line); margin-top:30px}
+  footer .f{max-width:680px; margin:0 auto; padding:30px 24px 60px; font-family:var(--sans); font-size:13px; color:var(--faint); line-height:1.7}
+
+  @media (max-width:720px){
+    h1{font-size:32px} .sub{font-size:18px}
+    .body p{font-size:18px} .lead{font-size:19px !important}
+    .flow{margin-left:-24px; margin-right:-24px}
+    .layers, .memcmp{grid-template-columns:1fr}
+    blockquote p{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner"><span class="dot"></span><b>Design Notes</b>&nbsp;·&nbsp;設計師的 Vibe Coding 工作流</div>
+</div>
+
+<article class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="kicker">Vibe Coding · 設計師工作流</div>
+    <h1>我做的 AI 設計工作流叫「全自動」——它最需要的其實是停下來</h1>
+    <p class="sub">設計師用 AI 跑完一次完整產品改版，學到的不是怎麼下指令，而是把確認點放在哪。工具不限，原則共通，給也在摸索的同行參考。</p>
+  </header>
+
+  <div class="byline">
+    <div class="avatar">A</div>
+    <div class="meta">
+      <div class="name">Abby — UI/UX Designer</div>
+      <div class="dets">2026.07.17 · 約 12 分鐘閱讀 · 寫給也在摸索工作流的同行</div>
+    </div>
+  </div>
+
+  <!-- ============ BODY ============ -->
+  <div class="body">
+
+    <p>在這次改版開工之前，我把自己的設計流程打包成了一個指令，叫 <code>/design-flow</code>。</p>
+
+    <p class="scene">標題是我自己下的：「<em>全自動</em>設計工作流程」。裡面還特地交代一句——<span class="last">流程啟動後，Phase 之間不主動停下來問問題。</span><br><br>一句話下去，需求分析 → 寫規格 → 畫流程 → 做原型 → 自我審查 → 修正，一路跑到底。我對它很滿意。</p>
+
+    <p>然後我拿它跑第一個真的專案：一次完整的產品改版。開工第四天，我正打算照它的精神一條龍衝完——爬會議記錄 → 列改善項目 → 寫規格 → 畫流程 → 做原型——結果被當場問住：編號是亂的、邊界是糊的、<strong>中間一個關卡都沒有</strong>。</p>
+
+    <p>我愣了一下。我自己寫的流程，最得意的地方就是「不停」。</p>
+
+    <p class="lead">如果你也是設計師，最近開始用 AI 把設計做成能跑的東西——但常常做到一半流程就亂掉、不確定該一次叫 AI 做多少、改完又怕弄壞別的地方——這篇大概會有點用。</p>
+
+    <p>這篇就是那次翻車之後，我重新整理出來的東西。整個改版從一份問題報告開始，一路到把程式碼上線；過程中真正花腦力的不是「怎麼跟 AI 下指令」，而是<strong>怎麼安排整個工作流程</strong>——哪裡可以讓 AI 自己跑、哪裡得先停下來確認、一個任務該切多大、改完怎麼安全地交出去。</p>
+
+    <p>下面把整套流程攤開來講：先看全貌，再一步一步走過六個步驟。<strong>我用的是 Claude Code，但原則換成 Cursor、Windsurf 或任何 AI coding 工具都成立。</strong></p>
+
+    <p>（文中會出現幾個名詞——vibe coding、skill、agent、branch／worktree——如果不熟，<a href="#gloss">文末有一段一句話解釋</a>，先跳過不影響閱讀。）</p>
+
+    <div class="tldr">
+      <div class="lab">TL;DR — 三十秒看完</div>
+      <ul>
+        <li><b>把確認點放在最便宜的地方</b>：分析完先停、確認方向，才讓 AI 進入花時間的產出。錯，要錯在還沒花大成本之前。</li>
+        <li><b>分清楚「照順序」跟「能平行」</b>：有前後依賴的工作讓 AI 照順序跑；真正獨立的工作才開好幾個 AI 一起做。</li>
+        <li><b>把原型變成真程式時，按「畫面」切，不是按「功能流程」切</b>：才能一個畫面一個畫面分批上線。</li>
+        <li><b>給 AI 一份「進度大腦」檔</b>：AI 會忘記，所以要有一份檔記著做到哪、哪條分支、哪裡跟原計畫不同。跨好幾天的工作就靠它接得上。</li>
+        <li><b>邊做邊質疑前提</b>：最值錢的決定，常是「做過一遍才發現原本想錯了」逼出來的。</li>
+        <li><b>交出去之前再卡一關</b>：動到使用者看得到的東西，先給畫面、等確認，才正式上線。</li>
+      </ul>
+    </div>
+
+    <!-- ============ FLOWCHART ============ -->
+    <h2><span class="num">01</span>　先看全貌：整條流程長這樣</h2>
+    <p>先用一張圖把整件事講完。看的時候可以特別留意<strong>兩個黃色的關卡</strong>——它們是這套流程裡我覺得最值得分享的部分：把風險擋在還很便宜的地方。</p>
+
+    <div class="flow">
+      <div class="fhead">
+        <div class="fk">End-to-End Workflow</div>
+        <div class="fs">從問題報告到上線</div>
+        <div class="fleg">
+          <span><i class="c1"></i>流程節點</span>
+          <span><i class="c2"></i>確認點（關卡）</span>
+          <span><i class="c3"></i>上線</span>
+        </div>
+      </div>
+
+      <div class="tl">
+
+        <div class="row">
+          <div class="badge">📥</div>
+          <div class="card2">
+            <div class="c-top">起點 · 輸入</div>
+            <div class="c-main">客戶訪談記錄 ＋ 既有問題報告</div>
+            <div class="c-sub">先界定「只改這幾件事」，不是從零發想</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="badge">🔍</div>
+          <div class="card2">
+            <div class="c-top">第一階段 · 分析</div>
+            <div class="c-main">列出要改的項目、標清楚每條的來源</div>
+            <div class="c-sub">這階段不做任何花時間的產出</div>
+          </div>
+        </div>
+
+        <div class="gate2">
+          <div class="gb">⚑</div>
+          <div class="gp">
+            <div class="gt">確認點 1 · 便宜的關卡</div>
+            <div class="gm">停下來等方向確認 — 對 → 往下；不對 → 重列</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="badge">🛠️</div>
+          <div class="card2">
+            <div class="c-top">第二階段 · 照順序的產出流水線</div>
+            <div class="c-main">寫規格 → 畫流程 → 做原型 → 自我檢查 → 修正</div>
+            <div class="c-sub">前後有依賴，所以「照順序跑」，不是一次全開</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="badge">🔀</div>
+          <div class="card2">
+            <div class="c-top">遷移 · 把原型變成真程式</div>
+            <div class="c-main">按「畫面」切分支，分三層做</div>
+            <div class="layers">
+              <div class="layer l1">
+                <div class="lnum">1</div>
+                <div class="lt">地基層</div>
+                <div class="ld">共用導覽、用詞改名 · 先做，影響全站</div>
+              </div>
+              <div class="layer l2">
+                <div class="lnum">2</div>
+                <div class="lt">各畫面層</div>
+                <div class="ld">登入／問卷／聊天／設定 · 平行做、逐一上線</div>
+              </div>
+              <div class="layer l3">
+                <div class="lnum">3</div>
+                <div class="lt">後端接資料</div>
+                <div class="ld">畫面好了再接真資料 · 標記「之後再做」</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gate2">
+          <div class="gb">⚑</div>
+          <div class="gp">
+            <div class="gt">確認點 2 · 交付前的關卡</div>
+            <div class="gm">動到使用者看得到的東西 → 先給畫面、等明確 OK</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="badge green">🚀</div>
+          <div class="card2 green">
+            <div class="c-top">上線</div>
+            <div class="c-main">各畫面整批送上正式環境</div>
+            <div class="c-sub">第一個版本真的出了</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <blockquote><p>整套流程其實就一個原則：把確認點放在最便宜的接縫上。要犯錯，就錯在還沒花大成本的地方。</p></blockquote>
+
+    <!-- ============ STEPS ============ -->
+    <h2><span class="num">02</span>　六個步驟，一步一步走</h2>
+
+    <div class="step-tag"><span class="b">1</span> 從「客戶訪談＋問題報告」界定範圍</div>
+    <p>起點不是打開設計工具開始發想，而是先讀<strong>客戶訪談記錄</strong>跟一份既有的問題報告，把要做的事收斂成「只要改這幾件」。一開始就先想清楚一件事：<strong>這個資料夾是「設計交付物」還是「程式碼」？</strong> 我把它定位成設計工作區，這個決定影響了後面所有「東西該放哪」的判斷。</p>
+    <p>不管你用什麼工具，這步都一樣：<strong>先讓 AI 幫你把訪談／回饋整理成「要改的清單」，而不是直接叫它做設計。</strong>範圍沒收斂前，做什麼都是猜。</p>
+
+    <div class="step-tag"><span class="b">2</span> 把任務分兩階段，中間設確認點</div>
+    <p>我原本想一條龍做完：訪談 → 列問題 → 寫規格 → 畫流程 → 做原型。後來改成<strong>兩階段</strong>：第一階段只列出要改的項目、標清楚來源，然後<em>停下來等我確認方向</em>；第二階段才進規格、流程、原型。理由很現實——第一步方向錯，後面花一整天做的東西全部白費。</p>
+    <div class="swap">
+      <div class="st">🔄 換成你的工具</div>
+      <div class="sb">在任何 AI 工具裡，這只是一句話的事：<b>「先只做分析、列出方向，做完停下來等我確認，先不要動手做原型。」</b> 別讓 AI 一口氣衝到底。</div>
+    </div>
+
+    <div class="step-tag"><span class="b">3</span> 分清楚「照順序」和「能平行」</div>
+    <p>這是我這次調整最多的一個觀念。寫規格 → 做原型 → 檢查 → 修正，這幾步<strong>前一步是後一步的輸入，彼此有依賴</strong>，所以得照順序跑、中間還要停下確認。如果這時候同時開好幾個 AI 各做各的，它們會略過中間的確認點，最後做出來的東西常常兜不起來。</p>
+    <p>我自己的做法，是把這串固定步驟包成一個叫 <code>/design-flow</code> 的 skill（把一串固定步驟打包成一個指令，叫一聲就照順序跑）。但<strong>重點不是這個 skill，而是「照順序、中間會停」這個概念</strong>——沒有 skill 也做得到：就一步一步手動叫，「先寫規格」→ 你看過 →「根據規格做原型」→ 你看過 →「自己檢查一遍有沒有問題」。重點是節奏在你手上，工具炫不炫倒是其次。</p>
+    <div class="callout good">
+      <div class="t">🤖 一句話總結</div>
+      <p>「用多個 AI」不等於「一堆 AI 同時開」。有前後依賴的工作 → <b>照順序，一棒接一棒</b>；真正彼此獨立的工作 → 才<b>開好幾個一起做</b>。選錯，你精心設的確認點就會被跳過。</p>
+    </div>
+
+    <div class="step-tag"><span class="b">4</span> 把原型變成真程式：按「畫面」切，不是按「流程」切</div>
+    <p>這是我第一次把一個互動原型真的搬進現有的產品裡。一開始我按「功能流程」來切分工作（例如「改註冊流程」當一塊），<strong>實際做過一遍才發現不對</strong>：一個流程會穿過好幾個畫面，改完流程，每個畫面還得回頭一一調整，根本沒辦法分批上線。後來改成<strong>按「畫面」切</strong>——登入頁一塊、設定頁一塊——每塊獨立、可以單獨上線。</p>
+    <p>再把整批工作分成三層：<strong>地基層</strong>（共用的導覽、用詞，會影響全站，先做）→ <strong>各畫面層</strong>（彼此獨立，平行做、逐一上線）→ <strong>接資料層</strong>（畫面都好了再接真資料）。</p>
+    <div class="swap">
+      <div class="st">🔄 換成你的工具</div>
+      <div class="sb">通用原則：<b>讓 AI 一次只專心改一個畫面</b>，改完那個畫面就能看、能驗收、能單獨上線。「按畫面切」對設計師其實最直覺——你本來就是一頁一頁設計的。</div>
+    </div>
+
+    <div class="step-tag"><span class="b">5</span> 真正獨立的部分，才開多個 AI 平行做</div>
+    <p>到了各畫面層，帳號頁和工作區頁這兩個<strong>彼此完全不相干</strong>，這時我才開兩個 AI 平行做，各自在自己的程式碼副本上跑、互不打架（這就是 worktree）。做完再統一把版型、字級對齊，把重複用到的元件抽成共用的。這段是我刻意拿來練「多 AI 協作」的——但前提是：<strong>確定這兩塊真的獨立，才平行</strong>。</p>
+    <p>入門階段其實<strong>不急著平行</strong>。先把「照順序、一次一塊」練熟，等你能清楚判斷「哪兩塊真的不相干」，再開平行——不然只是同時製造兩團亂。</p>
+
+    <div class="step-tag"><span class="b">6</span> 一個小改動、一次驗收，然後才上線</div>
+    <p>收尾階段我用<strong>「改一項、看一次、確認 OK 才存檔」</strong>的節奏：每改一個小地方（一個 icon、一個 hover、一個命名）就截圖確認。小批次、低風險、出問題容易回溯。最後各畫面整批送上正式環境，第一個版本真的出了。</p>
+    <div class="swap">
+      <div class="st">🔄 換成你的工具</div>
+      <div class="sb">通用守則：<b>動到使用者看得到的東西，先讓 AI 給你截圖或跑起來看，確認 OK 才正式存檔 / 上線</b>。不要讓 AI 一次改十處再一起丟給你——出錯你會找不到是哪一處。</div>
+    </div>
+
+    <hr class="soft">
+
+    <!-- ============ PROGRESS BRAIN ============ -->
+    <h2><span class="num">03</span>　最該補上的一塊：給 AI 一份「進度大腦」</h2>
+    <p>這塊是我吃過幾次虧才補上的，少了它，前面六步其實串不太起來，所以想多講一點。</p>
+
+    <p class="scene">有天我打開前一天還在做的專案，跟 AI 說「繼續」。它很乾脆地動手——改的卻是我兩天前就決定<em>不要</em>的方向。我愣了一下：欸，我們不是講好了嗎。<br><br>後來才想通：<span class="last">它其實不記得「前一天」。對它來說，每次對話都是第一天上班。</span></p>
+
+    <p>原因就是這個：<strong>它會忘記</strong>。每開一個新對話、隔一天回來，它不記得這個專案上次做到哪、為什麼那樣決定、哪條線在做什麼。如果每次都得從頭重講一遍，蠻累的；而且它還會自己<strong>照著早就過時的舊計畫繼續做</strong>。</p>
+
+    <p>解法很簡單：在專案裡放<strong>一份「進度大腦」檔</strong>（我自己叫它「狀態板」）。整個專案「做什麼、做到哪、哪條線在做」就看這一份。每次開工第一件事，是叫 AI 讀它；收工前，叫 AI 更新它。</p>
+
+    <h3>這份檔裡至少要有三件事</h3>
+    <p>而且第三件最常被忽略、卻最重要：</p>
+
+    <div class="board">
+      <div class="b-bar">📋 <span class="fn">PROGRESS.md</span> — 專案進度大腦 <span class="tag2">每次開工先讀 · 收工後更新</span></div>
+      <div class="b-now">
+        <span class="lab2">① 現在做到哪</span>
+        第一階段換皮<b>已整批上線</b>。登入頁、設定頁、聊天頁完成；剩「接真實資料」待後端。下一步：問卷頁換皮。
+      </div>
+      <table>
+        <thead><tr><th>② 任務</th><th>對應分支</th><th>狀態</th></tr></thead>
+        <tbody>
+          <tr><td>側邊欄改版（影響全站）</td><td class="bn">redesign/sidebar</td><td><span class="dotc"><span class="cdot done"></span>完成</span></td></tr>
+          <tr><td>登入頁</td><td class="bn">redesign/login</td><td><span class="dotc"><span class="cdot done"></span>完成</span></td></tr>
+          <tr><td>設定頁</td><td class="bn">redesign/settings</td><td><span class="dotc"><span class="cdot done"></span>完成</span></td></tr>
+          <tr><td>問卷頁</td><td class="bn">redesign/survey</td><td><span class="dotc"><span class="cdot doing"></span>進行中</span></td></tr>
+          <tr><td>接真實資料</td><td class="bn">data/api-wiring</td><td><span class="dotc"><span class="cdot todo"></span>待後端</span></td></tr>
+        </tbody>
+      </table>
+      <div class="b-diff">
+        <span class="lab2">③ ⚠ 跟原計畫不同、要修正的地方</span>
+        <div class="d-row"><s>問卷從 5 題縮成 3 題</s> → <b>撤回</b>：改題數要後端配合，先只換樣式、不動題目。</div>
+        <div class="d-row"><s>帳單放「個人帳號」層</s> → <b>翻盤成「每個空間各自計費」</b>：因為實際計費邏輯是這樣。</div>
+        <div class="d-row"><s>登入、問卷各開一條分支</s> → <b>合併成一條</b>：兩者其實高度相關，分開反而麻煩。</div>
+      </div>
+    </div>
+
+    <p>第三區是這份檔最容易被略過、卻最該寫的部分。<strong>計畫一定會變</strong>——做著做著你就會發現原本想的不太對。如果這些「轉彎」沒寫下來，AI（還有三天後的你自己）就會繼續照舊計畫做。把偏差明確記進去，AI 才接得上、才知道哪裡要修正，而不是默默走回老路。</p>
+
+    <div class="callout good">
+      <div class="t">🌿 順帶一提：分支名稱要先取好、要有規律</div>
+      <p>注意上面每個任務都對好了一條<b>分支</b>（branch＝一條獨立的修改線，做壞了不影響正式版）。名稱用同一套規律命名——例如全部 <code>redesign/</code> 開頭加畫面名（<code>redesign/login</code>、<code>redesign/settings</code>）。這樣 AI 一看分支名就知道這條在做什麼，你回頭看也一目了然。命名亂七八糟，AI 跟你都會迷路。</p>
+    </div>
+
+    <h3>進階：其實有「兩種」記憶檔，別搞混</h3>
+    <p>這是我繞了一圈才搞清楚、新手最容易塞錯地方的一件事。AI 的記憶其實該分成<strong>兩份不同的檔</strong>，因為它們的「變動頻率」天差地遠：</p>
+
+    <div class="memcmp">
+      <div class="memcol rule">
+        <div class="mh">📐 規則檔</div>
+        <div class="mfile">CLAUDE.md / .cursorrules</div>
+        <div class="mrow"><b>放什麼</b><span>永遠成立的事：專案是什麼、用什麼技術、設計風格規範、還有「開工先讀進度檔」這類習慣。</span></div>
+        <div class="mrow"><b>多久變一次</b><span>很少。定好就放著。</span></div>
+        <div class="mrow"><b>像什麼</b><span>員工手冊——每個新人(每次新對話)都該先讀的那本。</span></div>
+      </div>
+      <div class="memcol">
+        <div class="mh">🧠 進度檔</div>
+        <div class="mfile">PROGRESS.md</div>
+        <div class="mrow"><b>放什麼</b><span>一直在變的現況：做到哪、哪條分支、哪裡跟原計畫不同。</span></div>
+        <div class="mrow"><b>多久變一次</b><span>每次收工都更新。</span></div>
+        <div class="mrow"><b>像什麼</b><span>每日交接本——這次做了什麼、下次從哪接。</span></div>
+      </div>
+    </div>
+
+    <p>很多工具的「規則檔」會在<strong>每次對話自動被讀進去</strong>(像 Claude Code 的 <code>CLAUDE.md</code>、Cursor 的 <code>.cursorrules</code>)，所以你只要在裡面寫一句「<em>每次開工先讀 PROGRESS.md</em>」，AI 之後就會自動去翻進度檔，連提醒都省了。新手常犯的錯，是把「進度」也塞進規則檔——結果它越長越亂，每次自動讀又貴又慢。<strong>口訣：不會變的進規則檔，一直變的進進度檔。</strong></p>
+
+    <h3>為什麼這對設計師特別重要</h3>
+    <p>我們習慣把進度放在腦袋裡，或散在 Figma 各個檔案——但 <strong>AI 讀不到你的腦袋</strong>。這兩份檔就是你跟 AI 之間的「共同記憶」：有了它們，AI 比較像「記得專案脈絡的隊友」，而不是「每次都要重新帶一遍的實習生」。對我來說，這是讓跨好幾天的工作不至於亂掉的關鍵。</p>
+
+    <div class="swap">
+      <div class="st">🔄 換成你的工具</div>
+      <div class="sb">任何 AI coding 工具都適用，<b>檔名不重要</b>(<code>PROGRESS.md</code>、<code>STATUS.md</code>、<code>tasks.md</code> 都行)。最低限度：放一份進度檔在專案裡，每次對話開頭請 AI 讀、結尾請它更新。有「自動讀規則檔」功能的工具，再把「開工先讀進度檔」這條寫進去，就能全自動。</div>
+    </div>
+
+    <hr class="soft">
+
+    <!-- ============ CONCLUSION ============ -->
+    <h2><span class="num">04</span>　結論：如果你也在找自己的工作流</h2>
+    <p>這次最大的收穫，是從「交設計檔的設計師」往「能把一條完整流程帶到上線的設計師」挪了一步。AI 與其說讓我做得更快，不如說逼我<strong>把工作流程本身想清楚</strong>——哪裡有依賴、哪裡該停下確認、哪裡能放手平行。</p>
+    <p>給正在同一條路上的同行一句話：<strong>不用急著追最新的工具或開最多的 agent</strong>。先把「分階段、設確認點、一次一塊、改完先看」這幾件基本功練熟，流程大致就穩了。下面是整理好的版本，可以直接拿去改：</p>
+
+    <div class="end-card">
+      <h3>可以照著套的工作流</h3>
+      <ul>
+        <li><b>起點</b>：用客戶訪談＋既有報告，先界定「只改哪幾件事」。</li>
+        <li><b>分兩階段</b>：① 先列方向、停下確認 → ② 才進規格／流程／原型。</li>
+        <li><b>分工</b>：有依賴的工作照順序跑、中間設關卡；真正獨立的才平行做。</li>
+        <li><b>進度大腦</b>：放一份檔記著「做到哪／哪條分支／哪裡跟原計畫不同」，開工先讀、收工更新。</li>
+        <li><b>變成真程式</b>：按「畫面」切，不是按「流程」切；分地基→各畫面→接資料三層。</li>
+        <li><b>守邊界</b>：不動別人的共用設定、設計文件跟程式碼分開、不同工作分開做。</li>
+        <li><b>收尾</b>：改一項看一次、交出去前先給畫面、把方法記下來下次直接套。</li>
+      </ul>
+    </div>
+
+    <h3>最後一件事</h3>
+    <p>開頭那個 <code>/design-flow</code>，我到現在都沒改它——標題還是「<strong>全自動</strong>設計工作流程」，裡面那句「流程啟動後 Phase 之間不主動停下來問問題」也還在。</p>
+    <p>寫這篇之前我以為結論會是「我學到教訓，於是把工具修好了」。但真相是我根本沒動那個工具。我改的是<strong>我自己怎麼用它</strong>——什麼時候放手讓它跑，什麼時候把它攔下來。</p>
+    <p>工具不會幫你設關卡。<em>關卡是你設的。</em></p>
+
+    <blockquote><p>找工作流的重點，不在「用多少 AI」，而在「把確認點放在最便宜的接縫上」。</p></blockquote>
+
+    <hr class="soft">
+
+    <!-- ============ APPENDIX: GLOSSARY ============ -->
+    <div class="gloss" id="gloss">
+      <div class="lab">附錄：文中名詞，一句話版</div>
+      <div class="lab-sub">看到一半卡住的話，回來翻這裡就好。</div>
+      <dl>
+        <dt>Vibe Coding</dt>
+        <dd>用自然語言叫 AI 幫你寫程式、做出能跑的成品，而不是自己一行一行寫。設計師現在能靠它把原型變成真產品。</dd>
+        <dt>Skill（技能 / 自訂指令流程）</dt>
+        <dd>把一串「固定要做的步驟」打包成一個指令，下一次叫一聲就照順序跑。<b>文中的 <code>/design-flow</code> 就是我自己建的一個</b>，功能是按順序跑「寫規格 → 畫流程 → 做原型 → 自我檢查 → 修正」。你不一定要會建 skill，把這些步驟<b>手動一步一步叫 AI 做，效果一樣</b>。</dd>
+        <dt>Agent（代理）／並行 Agent</dt>
+        <dd>一個能自己連續做好幾步、不用你每步盯著的 AI 工人。<b>並行 agent</b> = 同時開好幾個 AI、各做一塊，加快速度。</dd>
+        <dt>分支（branch）／工作副本（worktree）</dt>
+        <dd>程式碼的版本控管概念。<b>branch</b> = 一條獨立的修改線，做壞了不影響正式版；<b>worktree</b> = 讓每個 AI 在自己的程式碼副本上做事，彼此不會打架。你只要知道「可以開好幾條線平行做、最後再合併」就夠了。</dd>
+        <dt>Checkpoint（確認點 / 關卡）</dt>
+        <dd>我自己取的叫法：在流程中刻意停下來、讓人確認方向再往下的點。這篇的核心觀念。</dd>
+      </dl>
+    </div>
+
+    <div class="tags">
+      <span>#VibeCoding</span><span>#UXDesign</span><span>#設計師工作流</span>
+      <span>#AI工具</span><span>#DesignOps</span><span>#從原型到產品</span>
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  <div class="f">
+    本文整理自一次完整產品改版的工作回顧，重點在可遷移的工作方法。<br>
+    文中工具（Claude Code、自訂 skill 等）僅為作者實際使用的例子，原則適用於任何 AI coding 工具。
+  </div>
+</footer>
+
+</body>
+</html>
