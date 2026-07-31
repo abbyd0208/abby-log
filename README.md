@@ -54,6 +54,11 @@ src/
 ├── components/     # Header / Footer / PostCard / TagPill / Toc / Mdx / BlogBrowser（搜尋）
 ├── lib/            # posts.ts（讀 MDX）、site.ts（站台設定與標籤）、format.ts
 └── content/blog/   # 文章
+
+writing/            # 不參與 build
+├── WRITING-PLAYBOOK.md   # 結構樣板、素材規範、Medium 平台坑
+├── seeds/                # 素材袋（寫作前的原料）
+└── archive/<slug>/       # 發布前原稿與 HTML 閱讀版
 ```
 
 搜尋是純前端比對（`BlogBrowser`），索引在 build 時就備好，不打任何 API。
