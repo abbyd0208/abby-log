@@ -68,7 +68,7 @@ export default async function PostPage({ params }: Props) {
       <Toc headings={post.headings} />
 
       <div className="mt-8">
-        <Mdx source={post.content} />
+        <Mdx source={post.content} glossaryContext={post.glossaryContext} />
       </div>
 
       {post.canonical && (

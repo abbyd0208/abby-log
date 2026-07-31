@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: site.url },
     { url: `${site.url}/blog` },
     { url: `${site.url}/about` },
+    { url: `${site.url}/glossary` },
     ...posts,
   ];
 }

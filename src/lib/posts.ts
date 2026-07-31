@@ -17,6 +17,8 @@ export type Post = {
   /** Medium 原文連結（若這篇是遷移過來的） */
   canonical?: string;
   draft?: boolean;
+  /** 這篇文章對某些術語的專屬補充，顯示在 <Term> 卡片下半 */
+  glossaryContext?: Record<string, string>;
   content: string;
   readingMinutes: number;
   headings: Heading[];
@@ -29,6 +31,7 @@ type Frontmatter = {
   tags?: string[];
   canonical?: string;
   draft?: boolean;
+  glossaryContext?: Record<string, string>;
 };
 
 function extractHeadings(markdown: string): Heading[] {
@@ -69,6 +72,7 @@ function readPost(fileName: string): Post {
     tags: fm.tags ?? [],
     canonical: fm.canonical,
     draft: fm.draft ?? false,
+    glossaryContext: fm.glossaryContext,
     content,
     readingMinutes: Math.max(1, Math.round(readingTime(content).minutes)),
     headings: extractHeadings(content),
