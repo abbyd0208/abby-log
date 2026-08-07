@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+:root {
+  /* 沿用 memory-dashboard 色系 */
+  --ink: #37352f;
+  --ink-2: #6b6a66;
+  --ink-3: #9b9a97;
+  --line: #eceae7;
+  --line-2: #f2f1ef;
+  --page: #ffffff;
+  --inset: #f7f6f4;
+  --soul: #2f6fd6;
+  --memory: #1aa06a;
+  --user: #e0700d;
+  --soul-bg: #eaf1fc;
+  --memory-bg: #e6f6ee;
+  --user-bg: #fdefe1;
+  --pop: 0 10px 34px rgba(15, 15, 15, 0.13);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
+    "Helvetica Neue", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-page: var(--page);
+  --color-inset: var(--inset);
+  --color-soul: var(--soul);
+  --color-memory: var(--memory);
+  --color-user: var(--user);
+  --color-soul-bg: var(--soul-bg);
+  --color-memory-bg: var(--memory-bg);
+  --color-user-bg: var(--user-bg);
+  --font-sans: var(--font);
+  --font-mono: var(--mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--soul-bg);
+}
+
+/* 用自訂的清除鈕，關掉瀏覽器原生的那顆 */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* 文章內文排版 */
+.prose-log {
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.85;
+}
+.prose-log > * + * {
+  margin-top: 1.15em;
+}
+.prose-log h2 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2.2em;
+  margin-bottom: 0.6em;
+  scroll-margin-top: 84px;
+}
+.prose-log h3 {
+  font-size: 19px;
+  font-weight: 650;
+  margin-top: 1.8em;
+  margin-bottom: 0.5em;
+  scroll-margin-top: 84px;
+}
+.prose-log a {
+  color: var(--soul);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--soul) 35%, transparent);
+}
+.prose-log a:hover {
+  text-decoration-color: var(--soul);
+}
+.prose-log ul,
+.prose-log ol {
+  padding-left: 1.4em;
+}
+.prose-log ul {
+  list-style: disc;
+}
+.prose-log ol {
+  list-style: decimal;
+}
+.prose-log li + li {
+  margin-top: 0.35em;
+}
+.prose-log blockquote {
+  border-left: 3px solid var(--line);
+  padding: 2px 0 2px 18px;
+  color: var(--ink-2);
+}
+.prose-log img {
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  max-width: 100%;
+  height: auto;
+}
+.prose-log hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 2.4em 0;
+}
+.prose-log code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--inset);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 1.5px 5px;
+}
+.prose-log pre {
+  background: var(--inset);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+.prose-log pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+.prose-log h2 a.anchor,
+.prose-log h3 a.anchor {
+  color: var(--ink-3);
+  text-decoration: none;
+  opacity: 0;
+  margin-left: 0.4em;
+  font-weight: 400;
+}
+.prose-log h2:hover a.anchor,
+.prose-log h3:hover a.anchor {
+  opacity: 1;
+}

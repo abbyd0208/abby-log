@@ -1,0 +1,38 @@
+<svg width="1200" height="680" viewBox="0 0 1200 680" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="680" rx="36" fill="#FBF7F1"/>
+  <text x="90" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="42" font-weight="700" fill="#2F2A25">AI 自主度 = 驗收點往後移多少</text>
+  <text x="92" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#746B61">同一個 AI，不同的是我在哪裡停下來看。</text>
+
+  <line x1="150" y1="350" x2="1030" y2="350" stroke="#D7C8B6" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1030 350 L990 326 M1030 350 L990 374" stroke="#D7C8B6" stroke-width="8" stroke-linecap="round"/>
+
+  <g>
+    <circle cx="220" cy="350" r="28" fill="#3E6B5A"/>
+    <rect x="95" y="190" width="250" height="112" rx="22" fill="#FFFFFF" stroke="#D9CEC1" stroke-width="2"/>
+    <text x="124" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="700" fill="#2F2A25">Level 1</text>
+    <text x="124" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#3E6B5A">我看每一步</text>
+    <text x="108" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#5E554D">適合還沒有標準、</text>
+    <text x="108" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#5E554D">不能晚點才發現錯的事。</text>
+  </g>
+
+  <g>
+    <circle cx="600" cy="350" r="28" fill="#B87945"/>
+    <rect x="475" y="190" width="250" height="112" rx="22" fill="#FFFFFF" stroke="#D9CEC1" stroke-width="2"/>
+    <text x="504" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="700" fill="#2F2A25">Level 2</text>
+    <text x="504" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#B87945">我看關鍵點</text>
+    <text x="474" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#5E554D">AI 先自查，</text>
+    <text x="474" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#5E554D">我只確認會影響方向的地方。</text>
+  </g>
+
+  <g>
+    <circle cx="980" cy="350" r="28" fill="#715C9E"/>
+    <rect x="855" y="190" width="250" height="112" rx="22" fill="#FFFFFF" stroke="#D9CEC1" stroke-width="2"/>
+    <text x="884" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="700" fill="#2F2A25">Level 3</text>
+    <text x="884" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#715C9E">我只看結果</text>
+    <text x="846" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#5E554D">前提是錯了也看得出來，</text>
+    <text x="846" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#5E554D">而且重做成本可以接受。</text>
+  </g>
+
+  <rect x="115" y="540" width="970" height="70" rx="20" fill="#EFE6DA"/>
+  <text x="148" y="584" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="600" fill="#2F2A25">問題不是「AI 有多強」，而是「它做錯時，我會在哪一段發現？」</text>
+</svg>
