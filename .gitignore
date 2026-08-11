@@ -44,3 +44,6 @@ next-env.d.ts
 .claude/worktrees/
 
 blog-app/.next
+
+# blog-app/public/images 由 scripts/copy-content-images.mjs 從 content/images 產生
+blog-app/public/images/

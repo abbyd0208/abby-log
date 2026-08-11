@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "copy-images": "node scripts/copy-content-images.mjs",
+    "predev": "npm run copy-images",
     "dev": "next dev",
+    "prebuild": "npm run copy-images",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

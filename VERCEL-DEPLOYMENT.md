@@ -9,15 +9,31 @@ abby-log/
 ├── content/blog/        ← 文章來源（真相所在，13 篇 .mdx）
 ├── content/images/      ← 圖片來源
 ├── blog-app/            ← Next.js app，Vercel 的 Root Directory
-│   ├── src/lib/posts.ts     讀 ../content/blog
-│   └── public/images        symlink → ../../content/images
+│   ├── src/lib/posts.ts             讀 ../content/blog
+│   ├── scripts/copy-content-images.mjs  build 前把 content/images 複製進 public/
+│   └── public/images                ← 產物，不進 git
 ├── src/ public/ ...     ← 舊版 app，未使用，待清理
 └── writing/ workspace/  ← 寫作素材與工作檔，不參與 build
 ```
 
-**注意路徑是相對於 `blog-app/` 的**：`posts.ts` 用 `../content/blog`，symlink 用 `../../content/images`。
-多算一層會讓路徑跑到 repo 外面（本機變成 `/Users/content/blog`，Vercel 變成 `/content/blog`），
-build 不會報錯但文章數會是 0、圖片全 404。2026-08-11 修過一次。
+### 圖片為什麼用複製而不是 symlink
+
+原本 `blog-app/public/images` 是指向 `../../content/images` 的 symlink。本機 `next build` 沒問題，
+但 Vercel 在 Root Directory 設成 `blog-app` 之後，要把 root 以外的檔案收進 build 環境，
+遇到指向 root 外面的 symlink 會失敗：
+
+```
+Error: Cannot copy '../../content/images' to a subdirectory of itself, '../../content/images'.
+```
+
+注意這發生在 `next build` **成功之後**的檔案收集階段——build log 會看到頁面都產出了才報錯。
+現在改成 `prebuild` 實體複製一份，`predev` 也掛了同一個腳本，本機開發不用另外處理。
+
+### 路徑層數
+
+`posts.ts` 的 `../content/blog` 是相對於 `blog-app/`。多算一層會跑到 repo 外面
+（本機變成 `/Users/content/blog`，Vercel 變成 `/content/blog`），build 不會報錯但文章數會是 0。
+2026-08-11 修過一次。
 
 ## Vercel 專案設定
 
@@ -51,7 +67,7 @@ npm start -- -p 3111
 
 檢查重點：
 - build 輸出的 `/blog/[slug]` 頁數要等於 `content/blog/` 的 .mdx 數量（目前 13）
-- 文章頁的圖片要真的載入（symlink 斷掉時 HTML 仍有 `<img>`，但圖是破的）
+- 文章頁的圖片要真的載入（複製沒跑到時 HTML 仍有 `<img>`，但圖是破的）
 
 build 有一則 warning 說偵測到兩個 lockfile（repo 根與 `blog-app/`），選了 repo 根當 workspace root。
 不影響結果；要消掉就在 `blog-app/next.config.ts` 設 `turbopack.root`，或等舊版 app 清掉後自然消失。
