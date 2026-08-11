@@ -4,8 +4,8 @@ import matter from "gray-matter";
 import readingTime from "reading-time";
 import GithubSlugger from "github-slugger";
 
-// 新結構：blog 檔案已移到 ../../../content/blog
-const POSTS_DIR = path.join(process.cwd(), "../../../content/blog");
+// 新結構：文章放在 repo 根的 content/blog，build 的 cwd 是 blog-app，往上一層即可
+const POSTS_DIR = path.join(process.cwd(), "../content/blog");
 
 export type Heading = { id: string; text: string; level: 2 | 3 };
 

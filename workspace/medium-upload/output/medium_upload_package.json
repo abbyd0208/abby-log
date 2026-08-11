@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-08-01T16:28:14.320541",
+  "articles": [
+    {
+      "title": "AI 記憶系統的死胡同——為什麼記憶的瓶頸不在記憶",
+      "summary": "我以為問題在於 AI 記不住，但自動化讓我才發現真相：瓶頸根本不在記憶，而在那道從機器到人腦的最後一哩。",
+      "tags": [
+        "ai-workflow",
+        "tools",
+        "design",
+        "reflection"
+      ],
+      "slug": "ai-memory-dashboard",
+      "images": [
+        "/Users/abbyting/abby-log/public/images/ai-memory-dashboard/01.jpeg",
+        "/Users/abbyting/abby-log/public/images/ai-memory-dashboard/02.png",
+        "/Users/abbyting/abby-log/public/images/ai-memory-dashboard/03.png"
+      ],
+      "file_path": "/Users/abbyting/abby-log/src/content/blog/ai-memory-bottleneck.mdx"
+    },
+    {
+      "title": "我用吉普賽和哈奇林實現 AI 記憶自動化——多代理協作的故事",
+      "summary": "從單一助理到多代理系統：怎麼讓 Hermes 和 Claude Code 分工合作，自動迭代和管理記憶。",
+      "tags": [
+        "ai-workflow",
+        "hermes",
+        "agents",
+        "automation"
+      ],
+      "slug": "gypsy-and-hitchlin",
+      "images": [],
+      "file_path": "/Users/abbyting/abby-log/src/content/blog/gypsy-and-hitchlin.mdx"
+    },
+    {
+      "title": "實驗如何用 AI 破解專業領域知識的迷宮",
+      "summary": "最近我接手了一個新領域的專案，剛開始參與客戶會議時很挫折。客戶太習慣自己的工作流程，會很自然地拋出各種術語。每次他們試著解釋，我還是聽得一頭霧水。",
+      "tags": [
+        "ai-workflow",
+        "design-thinking",
+        "case-study",
+        "claude"
+      ],
+      "slug": "prompt-tutor",
+      "images": [
+        "/Users/abbyting/abby-log/public/images/prompt-tutor/01.png",
+        "/Users/abbyting/abby-log/public/images/prompt-tutor/03.png"
+      ],
+      "file_path": "/Users/abbyting/abby-log/src/content/blog/prompt-tutor.mdx"
+    }
+  ]
+}
