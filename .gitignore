@@ -47,3 +47,6 @@ blog-app/.next
 
 # blog-app/public/images 由 scripts/copy-content-images.mjs 從 content/images 產生
 blog-app/public/images/
+
+# blog-app/src/content/drafts 由 scripts/copy-content-drafts.mjs 從 writing/drafts/content-blog 產生
+blog-app/src/content/drafts/
