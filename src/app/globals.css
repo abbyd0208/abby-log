@@ -1,20 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  /* 沿用 memory-dashboard 色系 */
-  --ink: #37352f;
-  --ink-2: #6b6a66;
-  --ink-3: #9b9a97;
-  --line: #eceae7;
-  --line-2: #f2f1ef;
+  /* 方案 A「現代清爽型」：中性冷灰 + 沉穩藍，取代原本的暖灰色系 */
+  --ink: #1a1a1a;
+  --ink-2: #4b5563;
+  --ink-3: #6b7280;
+  --line: #e5e7eb;
+  --line-2: #f3f4f6;
   --page: #ffffff;
-  --inset: #f7f6f4;
-  --soul: #2f6fd6;
-  --memory: #1aa06a;
-  --user: #e0700d;
-  --soul-bg: #eaf1fc;
-  --memory-bg: #e6f6ee;
-  --user-bg: #fdefe1;
+  --inset: #f9fafb;
+  --soul: #1e5ba8;
+  --memory: #16a34a;
+  --user: #d97706;
+  --soul-bg: #e8eff9;
+  --memory-bg: #e7f6ec;
+  --user-bg: #fdf0dc;
+  /* 實心標籤（篩選 active）用的深一階色：--memory / --user 配白字對比不足，
+     這兩個是壓到 4.5:1 以上的版本，只給 TagPill 的 filter variant 用 */
+  --memory-solid: #15803d;
+  --user-solid: #b45309;
   --pop: 0 10px 34px rgba(15, 15, 15, 0.13);
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
     "Helvetica Neue", "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -35,6 +39,8 @@
   --color-soul-bg: var(--soul-bg);
   --color-memory-bg: var(--memory-bg);
   --color-user-bg: var(--user-bg);
+  --color-memory-solid: var(--memory-solid);
+  --color-user-solid: var(--user-solid);
   --font-sans: var(--font);
   --font-mono: var(--mono);
 }
@@ -65,24 +71,27 @@ input[type="search"]::-webkit-search-decoration {
 /* 文章內文排版 */
 .prose-log {
   color: var(--ink);
-  font-size: 17px;
-  line-height: 1.85;
+  font-size: 18px;
+  line-height: 1.8;
 }
 .prose-log > * + * {
   margin-top: 1.15em;
 }
 .prose-log h2 {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin-top: 2.2em;
-  margin-bottom: 0.6em;
+  line-height: 1.35;
+  margin-top: 2em;
+  margin-bottom: 0.55em;
   scroll-margin-top: 84px;
 }
 .prose-log h3 {
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 650;
-  margin-top: 1.8em;
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  margin-top: 1.9em;
   margin-bottom: 0.5em;
   scroll-margin-top: 84px;
 }
@@ -158,4 +167,34 @@ input[type="search"]::-webkit-search-decoration {
 .prose-log h2:hover a.anchor,
 .prose-log h3:hover a.anchor {
   opacity: 1;
+}
+
+/* 文章內頁兩欄版型
+   ------------------------------------------------------------------
+   root layout 的 <main> 是 max-w-[820px]，塞不下 240px 側欄，
+   所以桌機時往左右各撐開 90px（820 + 180 = 1000px）：
+     240px（TOC）+ 40px（gap）+ 720px（內文）= 1000px
+   斷點 1060px = 1000 + 左右 px-6 各 24px，再多留一點餘裕，
+   低於這個寬度就退回單欄（TOC 在內文上方，不擠壓內文）。 */
+@media (min-width: 1060px) {
+  .post-grid {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    column-gap: 40px;
+    margin-inline: -90px;
+    /* sticky 需要 grid item 比 row 矮，stretch 會讓它撐滿而黏不住 */
+    align-items: start;
+  }
+  /* header / canonical / 前後文導覽跨滿兩欄 */
+  .post-grid > .post-span {
+    grid-column: 1 / -1;
+  }
+  .post-toc {
+    position: sticky;
+    /* header 約 57px，再加一點呼吸；與 h2/h3 的 scroll-margin-top 對齊 */
+    top: 88px;
+    max-height: calc(100dvh - 120px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }
