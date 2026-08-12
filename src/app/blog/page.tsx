@@ -22,14 +22,13 @@ export default async function BlogIndex({
       .toLowerCase(),
   }));
 
+  // 標題交給 BlogBrowser 排，才能跟搜尋框在 desktop 併成同一列工具列
   return (
-    <>
-      <h1 className="text-[28px] font-bold tracking-[-0.03em]">文章</h1>
-      <BlogBrowser
-        posts={posts}
-        tagCounts={Object.fromEntries(getTagCounts())}
-        activeTag={tag}
-      />
-    </>
+    <BlogBrowser
+      title="文章"
+      posts={posts}
+      tagCounts={Object.fromEntries(getTagCounts())}
+      activeTag={tag}
+    />
   );
 }

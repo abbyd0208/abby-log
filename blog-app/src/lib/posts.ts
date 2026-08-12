@@ -4,8 +4,7 @@ import matter from "gray-matter";
 import readingTime from "reading-time";
 import GithubSlugger from "github-slugger";
 
-// 新結構：文章放在 repo 根的 content/blog，build 的 cwd 是 blog-app，往上一層即可
-const POSTS_DIR = path.join(process.cwd(), "../content/blog");
+const POSTS_DIR = path.join(process.cwd(), "src/content/blog");
 
 export type Heading = { id: string; text: string; level: 2 | 3 };
 
@@ -86,6 +85,8 @@ export function getAllPosts(): Post[] {
     .readdirSync(POSTS_DIR)
     .filter((f) => /\.mdx?$/.test(f))
     .map(readPost)
+    // `delete-` 是 Abby 標記「之後要手動刪掉」的草稿，不應出現在 blog、RSS、sitemap 或文章路由。
+    .filter((p) => !p.title.startsWith("delete-"))
     .filter((p) => !p.draft || process.env.NODE_ENV === "development")
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
