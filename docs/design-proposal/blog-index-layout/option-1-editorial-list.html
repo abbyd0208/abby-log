@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Option 1 — Editorial list（內容優先）｜Abby.log Blog Index 版型探索</title>
+<style>
+:root{
+  --ink:#1a1a1a;--ink-2:#4b5563;--ink-3:#6b7280;--line:#e5e7eb;--line-2:#f3f4f6;
+  --page:#ffffff;--inset:#f9fafb;--soul:#1e5ba8;--memory:#16a34a;--user:#d97706;
+  --soul-bg:#e8eff9;--memory-bg:#e7f6ec;--user-bg:#fdf0dc;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:#eef0f3;color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* ── 文件層 ───────────────────────────────────────── */
+.doc-head{background:#111827;color:#d1d5db;padding:24px}
+.doc-head .inner{max-width:1280px;margin:0 auto}
+.doc-head .back{font-size:12px;color:#9ca3af;text-decoration:none}
+.doc-head .back:hover{color:#fff}
+.doc-head h1{margin:10px 0 0;color:#fff;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.doc-head .sub{margin:7px 0 0;font-size:13px;color:#9ca3af;max-width:860px}
+.doc-head .goal{margin-top:14px;border-left:3px solid #374151;padding-left:12px;font-size:13px;color:#d1d5db;max-width:860px}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px 64px}
+.sec{margin-top:30px}
+.sec-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.sec-h h2{margin:0;font-size:15px;font-weight:700;letter-spacing:-.01em}
+.sec-h em{font-style:normal;font-size:11.5px;color:#6b7280;background:#e3e6ea;border-radius:999px;padding:2px 9px;font-variant-numeric:tabular-nums}
+.sec-h p{margin:0;font-size:12.5px;color:#6b7280}
+.frame{position:relative;background:var(--page);border:1px solid #d7dbe0;border-radius:12px;overflow:hidden}
+.foldline{position:absolute;left:0;right:0;height:0;border-top:2px dashed #f59e0b;z-index:5;pointer-events:none}
+.foldline span{position:absolute;right:10px;top:-10px;background:#f59e0b;color:#fff;font-size:10px;line-height:1.9;padding:0 8px;border-radius:999px;font-weight:600;white-space:nowrap}
+.measure{display:inline-flex;align-items:center;gap:6px;background:#fff7ed;border:1px solid #fed7aa;color:#b45309;font-size:11.5px;padding:2px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
+
+.split{display:grid;grid-template-columns:407px minmax(0,1fr);gap:24px;align-items:start}
+@media(max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
+.note{background:#fff;border:1px solid #dfe3e8;border-radius:12px;padding:18px 20px;font-size:12.5px}
+.note dl{margin:0}
+.note dt{font-size:11px;color:#9ca3af;letter-spacing:.04em;margin-top:16px;font-weight:600}
+.note dt:first-child{margin-top:0}
+.note dd{margin:5px 0 0;color:var(--ink-2);line-height:1.7}
+.note ul{margin:5px 0 0;padding-left:17px;color:var(--ink-2)}
+.note li{margin-top:5px}
+.note li b{color:var(--ink);font-weight:600}
+.note .warn{color:#b45309}
+
+/* ── 產品畫面 ─────────────────────────────────────── */
+.site{border-bottom:1px solid var(--line);background:rgba(255,255,255,.9)}
+.site-inner{max-width:820px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+.dot{width:8px;height:8px;border-radius:999px;background:var(--soul);flex:none}
+.nav{margin-left:auto;display:flex;gap:20px;font-size:13.5px;color:var(--ink-2)}
+.nav a{text-decoration:none;color:inherit}
+.nav a.on{color:var(--ink);font-weight:600}
+
+.search{position:relative}
+.search input{width:100%;border:1px solid var(--line);background:var(--inset);border-radius:10px;padding:8px 32px 8px 34px;font-size:13.5px;font-family:inherit;color:var(--ink);outline:none}
+.search input::placeholder{color:var(--ink-3)}
+.search .ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-3);display:flex}
+
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:500;text-decoration:none;line-height:1.5;white-space:nowrap}
+.chip .n{opacity:.55;font-weight:400}
+.chip.soul{background:var(--soul-bg);color:var(--soul)}
+.chip.memory{background:var(--memory-bg);color:var(--memory)}
+.chip.user{background:var(--user-bg);color:var(--user)}
+.chip.on{background:var(--soul);color:#fff}
+.chip.on .n{opacity:.75}
+.chip.ghost{background:transparent;color:var(--ink-3);border:1px solid var(--line)}
+
+.post{border-bottom:1px solid var(--line);padding:26px 0}
+.post:first-child{padding-top:0}
+.post:last-child{border-bottom:0}
+.post .meta{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.post h3{margin:5px 0 0;font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.45}
+.post p{margin:8px 0 0;font-size:14.5px;color:var(--ink-2);line-height:1.65}
+.post .tags{margin-top:13px;display:flex;flex-wrap:wrap;gap:6px}
+
+/* ── Option 1 專屬：editorial ───────────────────────── */
+.o1 main{max-width:820px;margin:0 auto;padding:26px 24px 40px}
+/* 標題降級成一行 label，與搜尋同列 */
+.o1 .headrow{display:flex;align-items:center;gap:16px}
+.o1 .headrow h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.o1 .headrow .search{margin-left:auto;width:280px}
+/* 標籤降級成單行工具列，超出收進「更多」 */
+.o1 .filterrow{margin-top:16px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:hidden}
+.o1 .filterrow .sep{width:1px;height:16px;background:var(--line);margin:0 4px;flex:none}
+.o1 .countrow{margin-top:14px;padding-bottom:12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-3)}
+.o1 .countrow b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.o1 .countrow .clear{margin-left:auto;color:var(--soul);text-decoration:none}
+.o1 .list{margin-top:22px}
+
+/* mobile 機身 */
+.phone{width:375px;border:1px solid #d7dbe0;border-radius:22px;overflow:hidden;background:#fff;position:relative;flex:none;box-shadow:0 6px 24px rgba(15,15,15,.08)}
+.phone .statusbar{height:26px;background:#fff;border-bottom:1px solid var(--line-2);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.phone .site-inner{max-width:none;padding:11px 16px;gap:12px}
+.phone .brand{font-size:15px}
+.phone .nav{gap:13px;font-size:12.5px}
+.phone main{max-width:none;padding:16px 16px 26px}
+.phone .headrow{display:block}
+.phone .headrow h1{font-size:18px}
+.phone .headrow .search{margin:10px 0 0;width:100%}
+.phone .filterrow{margin-top:12px;position:relative}
+.phone .filterrow::after{content:"";position:absolute;right:0;top:0;bottom:0;width:34px;background:linear-gradient(90deg,rgba(255,255,255,0),#fff)}
+.phone .countrow{margin-top:12px;padding-bottom:10px}
+.phone .list{margin-top:16px}
+.phone .post{padding:20px 0}
+.phone .post h3{font-size:17px}
+.phone .post p{font-size:13.5px}
+.phone .post .meta{font-size:11.5px}
+.phones{display:flex;gap:20px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div class="doc-head">
+  <div class="inner">
+    <a class="back" href="index.html">← 回三案總比較</a>
+    <h1>Option 1 — Editorial list（內容優先）</h1>
+    <p class="sub">維持單欄，但把「標題 / 搜尋 / 標籤」三塊壓成兩列工具列，讓文章列表往上移。改動範圍最小、最像現在的 Abby.log。</p>
+    <div class="goal">目標：讓文章列表在首屏就是主角。頁面標題降級成一行 label，標籤從「分組面板」變成「單行工具列」，其餘標籤收進「更多」。</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── Desktop ────────────────────────────────────── -->
+  <div class="sec">
+    <div class="sec-h">
+      <h2>Desktop 主畫面</h2>
+      <em>1280 × 900</em>
+      <span class="measure" id="m-desktop">量測中…</span>
+      <p>橘色虛線＝首屏折線（1280×900 視窗扣掉瀏覽器介面後約 800px 可視高）</p>
+    </div>
+
+    <div class="frame o1">
+      <div class="foldline" style="top:800px"><span>首屏折線 800px</span></div>
+
+      <header class="site">
+        <div class="site-inner">
+          <a class="brand" href="#"><span class="dot"></span>Abby.log</a>
+          <nav class="nav">
+            <a href="#">首頁</a><a href="#" class="on">文章</a><a href="#">關於</a><a href="#">RSS</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <div class="headrow">
+          <h1>文章</h1>
+          <div class="search">
+            <span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <input type="search" placeholder="搜尋文章標題、內文、標籤…">
+          </div>
+        </div>
+
+        <div class="filterrow">
+          <a class="chip ghost" href="#">全部 <span class="n">8</span></a>
+          <span class="sep"></span>
+          <a class="chip soul" href="#">#ai-workflow <span class="n">5</span></a>
+          <a class="chip on" href="#">#tools <span class="n">3</span></a>
+          <a class="chip memory" href="#">#reflection <span class="n">3</span></a>
+          <a class="chip user" href="#">#claude <span class="n">3</span></a>
+          <a class="chip soul" href="#">#design-thinking <span class="n">2</span></a>
+          <a class="chip ghost" href="#">＋7 個標籤 ▾</a>
+        </div>
+
+        <div class="countrow">
+          <span>共 <b>3</b> 篇</span>
+          <span>·</span>
+          <span>篩選中 #tools</span>
+          <a class="clear" href="#">清除篩選</a>
+        </div>
+
+        <div class="list" id="list-desktop">
+          <article class="post">
+            <div class="meta"><time>2026.07.28</time><span>·</span><span>9 分鐘</span></div>
+            <h3>如何監測自己的AI到底都做了什麼？做一個可視化儀表板吧！</h3>
+            <p>「你不是說每天晚上都會自動整理嗎？我怎麼都沒看到？」它確實有整理——問題從來不是它沒記住，而是它記住的東西沒有一個出口。</p>
+            <div class="tags">
+              <span class="chip soul">#ai-workflow</span>
+              <span class="chip soul">#tools</span>
+              <span class="chip memory">#reflection</span>
+            </div>
+          </article>
+
+          <article class="post">
+            <div class="meta"><time>2026.04.04</time><span>·</span><span>9 分鐘</span></div>
+            <h3>SaaS 產品影片，不用 AE 也做得出來 — 如何在對的地方使用對的工具</h3>
+            <p>如果你在 SaaS 公司工作過，你一定知道這個場景：官網需要一支產品介紹影片，但團隊裡沒有動態設計師。</p>
+            <div class="tags">
+              <span class="chip soul">#tools</span>
+              <span class="chip user">#video</span>
+              <span class="chip memory">#tutorial</span>
+            </div>
+          </article>
+
+          <article class="post">
+            <div class="meta"><time>2025.12.14</time><span>·</span><span>5 分鐘</span></div>
+            <h3>UI/UX QA 不是 Checklist：為什麼設計師需要的是 Playbook，而不是更多檢查表</h3>
+            <p>在設計流程即將交付的那一刻，你是否也曾出現過這樣的感覺？</p>
+            <div class="tags">
+              <span class="chip soul">#design-thinking</span>
+              <span class="chip memory">#mindset</span>
+              <span class="chip soul">#tools</span>
+            </div>
+          </article>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ── Mobile + 說明 ──────────────────────────────── -->
+  <div class="sec split">
+    <div>
+      <div class="sec-h"><h2>Mobile</h2><em>375 寬</em></div>
+      <div class="phones">
+        <div class="frame phone o1">
+          <div class="statusbar"><span>9:41</span><span>▮▮▮</span></div>
+          <header class="site">
+            <div class="site-inner">
+              <a class="brand" href="#"><span class="dot"></span>Abby.log</a>
+              <nav class="nav"><a href="#">首頁</a><a href="#" class="on">文章</a><a href="#">關於</a></nav>
+            </div>
+          </header>
+          <main>
+            <div class="headrow">
+              <h1>文章</h1>
+              <div class="search">
+                <span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+                <input type="search" placeholder="搜尋文章…">
+              </div>
+            </div>
+            <div class="filterrow">
+              <a class="chip ghost" href="#">全部 <span class="n">8</span></a>
+              <a class="chip on" href="#">#tools <span class="n">3</span></a>
+              <a class="chip soul" href="#">#ai-workflow <span class="n">5</span></a>
+              <a class="chip memory" href="#">#reflec…</a>
+            </div>
+            <div class="countrow">
+              <span>共 <b>3</b> 篇</span><span>·</span><span>#tools</span>
+              <a class="clear" href="#">清除</a>
+            </div>
+            <div class="list">
+              <article class="post">
+                <div class="meta"><time>2026.07.28</time><span>·</span><span>9 分鐘</span></div>
+                <h3>如何監測自己的AI到底都做了什麼？做一個可視化儀表板吧！</h3>
+                <p>「你不是說每天晚上都會自動整理嗎？我怎麼都沒看到？」它確實有整理——問題從來不是它沒記住。</p>
+                <div class="tags">
+                  <span class="chip soul">#ai-workflow</span><span class="chip soul">#tools</span>
+                </div>
+              </article>
+              <article class="post">
+                <div class="meta"><time>2026.04.04</time><span>·</span><span>9 分鐘</span></div>
+                <h3>SaaS 產品影片，不用 AE 也做得出來</h3>
+                <p>官網需要一支產品介紹影片，但團隊裡沒有動態設計師。</p>
+                <div class="tags">
+                  <span class="chip soul">#tools</span><span class="chip user">#video</span>
+                </div>
+              </article>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-h"><h2>設計說明</h2></div>
+      <div class="note">
+        <dl>
+          <dt>核心動作</dt>
+          <dd>不動欄位結構（維持 820px 單欄），只把「頁面標題 / 搜尋 / 標籤」三個垂直堆疊的區塊壓成 <b>兩列工具列</b>：第一列＝標題＋搜尋同列，第二列＝單行標籤。標籤面板的三組 label（主題／類型／工具）拿掉，改用 chip 顏色本身表示分組。</dd>
+
+          <dt>優點</dt>
+          <dd><ul>
+            <li><b>首屏就看得到內容。</b>第一篇文章從現在的 ≈444px 上移到 ≈205px，800px 首屏內從「1 篇多一點」變成「2 篇完整＋第 3 篇露頭」。</li>
+            <li><b>風險最低。</b>只重排 <code>BlogBrowser</code> 內部，不動 layout 寬度、不新增斷點、不新增元件。</li>
+            <li><b>閱讀感最接近 Medium／個人 blog</b>，跟文章內頁的單欄節奏一致，品牌調性不會斷。</li>
+            <li>「共 3 篇 · 篩選中 #tools · 清除」變成列表上方的一條分隔線，同時扮演「狀態」和「視覺分界」，不用多一個區塊。</li>
+          </ul></dd>
+
+          <dt>缺點</dt>
+          <dd><ul>
+            <li><b>標籤可見性下降最多。</b>12 個標籤只露 5 個，其餘藏進「＋7 個標籤 ▾」。想靠標籤瀏覽的人要多點一次。</li>
+            <li>單行工具列要決定「露哪 5 個」——依篇數排？依主題群排？這是需要拍板的取捨，沒有標準答案。</li>
+            <li>捲下去之後工具列就消失（除非另外做 sticky），無法邊讀邊換標籤。</li>
+            <li>資訊密度提高後，頁面上方會有點「工具列感」，比現在少一點留白的鬆弛感。</li>
+          </ul></dd>
+
+          <dt>適合情境</dt>
+          <dd>文章數在 <b>10～40 篇</b> 之間、讀者主要是「從首頁／Medium 連過來，順著看最新幾篇」的個人 blog。標籤是輔助，不是主要導覽。以 Abby.log 目前 8 篇的規模，這個假設大致成立。</dd>
+
+          <dt>風險</dt>
+          <dd class="warn"><ul>
+            <li><b>治標不治本的風險。</b>文章長到 50 篇以上時，單行標籤列會不夠用，可能又要再改一次版型。</li>
+            <li>「＋7 個標籤 ▾」的展開面板是新元件（popover / details），要處理鍵盤與外點關閉，是這案唯一的新互動成本。</li>
+            <li>標題降到 19px 後，<code>&lt;h1&gt;</code> 的視覺重量和 PostCard 的 <code>&lt;h2&gt;</code>（20px）幾乎一樣——語意階層還在，但視覺上「頁面標題」會被文章標題蓋過。需要 Abby 判斷可不可接受。</li>
+          </ul></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// 量測第一篇文章在 frame 內的起始 Y，避免用估算數字唬人
+(function(){
+  var frame = document.querySelector('.frame.o1');
+  var first = document.querySelector('#list-desktop .post');
+  if(!frame || !first) return;
+  var y = Math.round(first.getBoundingClientRect().top - frame.getBoundingClientRect().top);
+  document.getElementById('m-desktop').textContent = '第一篇文章起始 Y = ' + y + 'px（現況 ≈444px）';
+})();
+</script>
+</body>
+</html>

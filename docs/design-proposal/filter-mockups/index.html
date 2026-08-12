@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog 標籤篩選區 — 三案比較｜Abby.log</title>
+<style>
+:root{
+  --ink:#1a1a1a;--ink-2:#4b5563;--ink-3:#6b7280;--line:#e5e7eb;--line-2:#f3f4f6;
+  --page:#ffffff;--inset:#f9fafb;--soul:#1e5ba8;--memory:#16a34a;--user:#d97706;
+  --soul-bg:#e8eff9;--memory-bg:#e7f6ec;--user-bg:#fdf0dc;
+  --pop:0 10px 34px rgba(15,15,15,.13);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:#eef0f3;color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* ── 文件層 ─────────────────────────────────────────── */
+.doc-head{background:#111827;color:#d1d5db;padding:26px 24px 24px}
+.doc-head .inner{max-width:1240px;margin:0 auto}
+.doc-head h1{margin:0;color:#fff;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.doc-head p{margin:8px 0 0;font-size:13px;max-width:760px;color:#9ca3af}
+.doc-head p b{color:#e5e7eb;font-weight:600}
+.doc-head .quote{margin-top:14px;border-left:3px solid #374151;padding-left:12px;font-size:13px;color:#d1d5db}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* 總表 */
+.summary{margin-top:26px;background:#fff;border:1px solid #dfe3e8;border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line-2)}
+th{background:#f7f8fa;font-weight:600;font-size:12px;color:var(--ink-2);letter-spacing:.01em}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums}
+td.num b{font-size:14px}
+tr.rec td{background:#f4f8fd}
+tr.base td{color:var(--ink-3)}
+.badge{display:inline-block;background:var(--soul);color:#fff;font-size:11px;padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:1px}
+.stars{letter-spacing:1px;color:#d97706}
+
+/* 每個方案一組 */
+.row{margin-top:34px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+@media (max-width:1080px){.row{grid-template-columns:minmax(0,1fr)}}
+.row-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.row-head h2{margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em}
+.row-head .kind{font-size:11.5px;color:#6b7280;background:#e3e6ea;border-radius:999px;padding:2px 9px}
+.row-head .kind.rec{background:var(--soul);color:#fff}
+
+.note{background:#fff;border:1px solid #dfe3e8;border-radius:12px;padding:16px 18px;font-size:12.5px;position:sticky;top:20px}
+.note.rec{border-color:#b9cfe9;box-shadow:0 0 0 3px rgba(30,91,168,.07)}
+.note dl{margin:0}
+.note dt{font-size:11px;color:#9ca3af;letter-spacing:.03em;margin-top:12px}
+.note dt:first-child{margin-top:0}
+.note dd{margin:3px 0 0;color:var(--ink-2);line-height:1.65}
+.note dd.h{color:var(--ink);font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.note dd.h small{font-weight:400;font-size:11.5px;color:#9ca3af;margin-left:4px}
+.note .go{display:block;margin-top:16px;text-align:center;background:var(--soul);color:#fff;text-decoration:none;font-size:12.5px;font-weight:500;border-radius:8px;padding:9px 12px}
+.note .go:hover{background:#18497f}
+.note.base .go{background:#6b7280}
+.note ul{margin:4px 0 0;padding-left:16px;color:var(--ink-2)}
+.note li{margin-top:3px}
+
+/* ── 產品畫面（preview） ─────────────────────────────── */
+.preview{background:var(--page);border:1px solid #d7dbe0;border-radius:12px;overflow:hidden}
+header.site{border-bottom:1px solid var(--line);background:rgba(255,255,255,.85)}
+.site-inner{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.dot{width:8px;height:8px;border-radius:999px;background:var(--soul)}
+.nav{margin-left:auto;display:flex;gap:18px;font-size:13px;color:var(--ink-2)}
+.nav a{color:inherit;text-decoration:none}
+main.page{max-width:820px;margin:0 auto;padding:30px 24px 34px}
+h1.page-title{font-size:28px;font-weight:700;letter-spacing:-.03em;margin:0}
+.search{position:relative;margin-top:24px}
+.search input{width:100%;border:1px solid var(--line);background:var(--inset);border-radius:10px;padding:10px 36px 10px 40px;font-size:14px;font-family:inherit;color:var(--ink);outline:none}
+.search input::placeholder{color:var(--ink-3)}
+.search .i-search{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-3);display:flex}
+
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;font-size:12px;font-weight:500;text-decoration:none;line-height:1.5;white-space:nowrap}
+.chip .num{opacity:.55;font-weight:400}
+.chip--solid{padding:4px 10px;border:1px solid transparent}
+.chip--solid.soul{background:var(--soul-bg);color:var(--soul)}
+.chip--solid.memory{background:var(--memory-bg);color:var(--memory)}
+.chip--solid.user{background:var(--user-bg);color:var(--user)}
+.chip--solid.on{box-shadow:0 0 0 2px rgba(30,91,168,.25)}
+.chip--ghost{padding:2px 8px;font-size:11.5px;background:transparent}
+.chip--ghost.soul{color:var(--soul);border:1px solid rgba(30,91,168,.26)}
+.chip--ghost.memory{color:var(--memory);border:1px solid rgba(22,163,74,.26)}
+.chip--ghost.user{color:var(--user);border:1px solid rgba(217,119,6,.30)}
+.chip--ghost .num{opacity:.45}
+.chip--ghost.lg{padding:2px 9px;font-size:12px}
+.chip.is-active{padding:2px 9px;font-size:11.5px;border:1px solid transparent;background:var(--soul-bg);color:var(--soul);box-shadow:0 0 0 2px rgba(30,91,168,.22)}
+.chip.is-active.lg{padding:2px 10px;font-size:12px}
+
+/* 現況（對照組）的篩選卡片 */
+.legacy-card{margin-top:12px;border:1px solid var(--line);background:var(--inset);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.legacy-card .grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.legacy-card .grp-label{width:32px;margin-right:4px;font-size:12px;color:var(--ink-3);flex:none}
+.legacy-card .filtering{padding-top:4px;font-size:12.5px;color:var(--ink-3)}
+.legacy-card .filtering a{color:var(--soul)}
+
+/* 方案 1 */
+.bar{margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.more{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--page);border-radius:999px;padding:2px 10px 2px 11px;font-size:12px;font-family:inherit;color:var(--ink-2);cursor:pointer;line-height:1.5}
+.more svg{opacity:.6}
+
+/* 方案 2 */
+.filter-zone{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.grp-label{width:32px;margin-right:4px;font-size:12px;color:var(--ink-3);flex:none}
+
+/* 方案 3 */
+.summary-row{margin-top:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-3)}
+.summary-row .clear{color:var(--ink-3);text-decoration:none;display:inline-flex;align-items:center}
+.toggle{margin-left:auto;display:inline-flex;align-items:center;gap:4px;background:none;border:0;padding:2px 0;font-size:12.5px;font-family:inherit;color:var(--soul);cursor:pointer}
+
+.count{margin-top:20px;font-size:12.5px;color:var(--ink-3);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.count .sep{color:#ccd1d8}
+.count .active{color:var(--soul);font-weight:500}
+.count .clear{color:var(--ink-3);text-decoration:none;display:inline-flex;align-items:center}
+
+.list{margin-top:8px}
+article.card{padding:0 0 4px}
+.meta{font-size:12.5px;color:var(--ink-3);display:flex;gap:10px;align-items:center}
+.card h2{margin:6px 0 0;font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.45}
+.card h2 a{color:inherit;text-decoration:none}
+.card p{margin:8px 0 0;font-size:14.5px;line-height:1.65;color:var(--ink-2)}
+.card .tags{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+.cut{margin-top:18px;border-top:1px dashed #d8dde3;padding-top:8px;font-size:11px;color:#a6acb5}
+
+footer.doc-foot{max-width:1240px;margin:44px auto 60px;padding:0 24px;font-size:12px;color:#8b919a}
+footer.doc-foot code{background:#e3e6ea;border-radius:4px;padding:1px 5px}
+</style>
+</head>
+<body>
+
+<div class="doc-head">
+  <div class="inner">
+    <h1>Blog 標籤篩選區 — 三案可視化比較</h1>
+    <div class="quote">「我沒有很喜歡這樣的排版方式，感覺標籤佔了上面一大區塊。」</div>
+    <p>下面是<b>現況對照組</b>與<b>三個方案</b>的真實 HTML 渲染（不是圖片、不是 build 產物），色票／字級／間距都取自
+      <b>globals.css</b> 與現有元件。狀態一律是 <b>active tag = #tools、共 3 篇</b>。
+      每組右邊的「高度」是頁面載入時<b>即時量到</b>的值：從搜尋框下緣量到「共 N 篇」上緣，也就是篩選區實際吃掉的那一整條。</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="summary">
+    <table>
+      <thead>
+        <tr><th style="width:26%">方案</th><th style="width:14%">篩選區高度</th><th style="width:14%">保留三層分組</th><th style="width:18%">新增互動狀態</th><th>一句話</th></tr>
+      </thead>
+      <tbody>
+        <tr class="base">
+          <td>現況（對照組）</td>
+          <td class="num"><b id="t-base">–</b></td>
+          <td>✓</td><td>無</td>
+          <td>外框卡片 + 12 顆實心 chip，就是 Abby 說「佔一大區塊」的那個</td>
+        </tr>
+        <tr>
+          <td>方案 1　Compact filter bar</td>
+          <td class="num"><b id="t-1">–</b></td>
+          <td>✗</td><td>popover</td>
+          <td>降最多，但弄丟主題／類型／工具的分組語意</td>
+        </tr>
+        <tr class="rec">
+          <td>方案 2　Inline minimal chips<span class="badge">推薦</span></td>
+          <td class="num"><b id="t-2">–</b></td>
+          <td>✓</td><td>無</td>
+          <td>結構全留、純樣式改動，減重感比數字更明顯</td>
+        </tr>
+        <tr>
+          <td>方案 3　Collapsible panel</td>
+          <td class="num"><b id="t-3">–</b></td>
+          <td>✓（藏起來）</td><td>展開 state</td>
+          <td>首屏最乾淨，代價是篩選入口要多點一次</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 現況 ───────────────────────────────────────── -->
+  <div class="row" id="row-base">
+    <div>
+      <div class="row-head"><h2>現況（對照組）</h2><span class="kind">目前線上的樣子</span></div>
+      <div class="preview">
+        <header class="site"><div class="site-inner">
+          <a class="brand" href="#"><span class="dot"></span>Abby.log</a>
+          <nav class="nav"><a href="#">首頁</a><a href="#">文章</a><a href="#">關於</a><a href="#">RSS</a></nav>
+        </div></header>
+        <main class="page">
+          <h1 class="page-title">文章</h1>
+          <div class="search">
+            <span class="i-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <input type="search" placeholder="搜尋文章標題、內文、標籤…">
+          </div>
+          <div class="legacy-card">
+            <div class="grp"><span class="grp-label">主題</span>
+              <span class="chip chip--solid soul">#ai-workflow<span class="num">5</span></span>
+              <span class="chip chip--solid soul">#design-thinking<span class="num">2</span></span>
+              <span class="chip chip--solid soul on">#tools<span class="num">3</span></span>
+              <span class="chip chip--solid soul">#career<span class="num">1</span></span>
+              <span class="chip chip--solid soul">#lifestyle<span class="num">1</span></span>
+            </div>
+            <div class="grp"><span class="grp-label">類型</span>
+              <span class="chip chip--solid memory">#tutorial<span class="num">1</span></span>
+              <span class="chip chip--solid memory">#reflection<span class="num">3</span></span>
+              <span class="chip chip--solid memory">#case-study<span class="num">2</span></span>
+              <span class="chip chip--solid memory">#experiment<span class="num">1</span></span>
+              <span class="chip chip--solid memory">#mindset<span class="num">2</span></span>
+            </div>
+            <div class="grp"><span class="grp-label">工具</span>
+              <span class="chip chip--solid user">#claude<span class="num">3</span></span>
+              <span class="chip chip--solid user">#video<span class="num">1</span></span>
+            </div>
+            <div class="filtering">篩選中：#tools · <a href="#">清除</a></div>
+          </div>
+          <div class="count"><span>共 3 篇</span></div>
+          <div class="list"><article class="card">
+            <div class="meta"><time>2026.07.28</time><span>·</span><span>9 分鐘</span></div>
+            <h2><a href="#">如何監測自己的AI到底都做了什麼？做一個可視化儀表板吧！</a></h2>
+            <p>「你不是說每天晚上都會自動整理嗎？我怎麼都沒看到？」它確實有整理——問題從來不是它沒記住，而是它記住的東西沒有一個出口。</p>
+            <div class="tags">
+              <span class="chip chip--solid soul">#ai-workflow</span>
+              <span class="chip chip--solid soul">#tools</span>
+              <span class="chip chip--solid memory">#reflection</span>
+            </div>
+          </article></div>
+          <div class="cut">— 以下省略第 2、3 篇 —</div>
+        </main>
+      </div>
+    </div>
+    <aside class="note base">
+      <dl>
+        <dt>篩選區高度</dt><dd class="h"><span id="h-base">–</span><small>基準</small></dd>
+        <dt>問題在哪</dt><dd>
+          <ul>
+            <li>搜尋框已經是一個灰底方塊，篩選卡再來一個，同一區有兩個互相競爭的「面」</li>
+            <li>12 顆 chip 全部實心，三種色系同時出現——輔助控制項比內容還搶眼</li>
+            <li>「篩選中」壓在卡片最底部，狀態其實很弱</li>
+          </ul>
+        </dd>
+        <dt>推薦程度</dt><dd><span class="stars">—</span> 待改</dd>
+      </dl>
+    </aside>
+  </div>
+
+  <!-- ── 方案 1 ─────────────────────────────────────── -->
+  <div class="row" id="row-1">
+    <div>
+      <div class="row-head"><h2>方案 1 — Compact filter bar</h2><span class="kind">高度降最多</span></div>
+      <div class="preview">
+        <header class="site"><div class="site-inner">
+          <a class="brand" href="#"><span class="dot"></span>Abby.log</a>
+          <nav class="nav"><a href="#">首頁</a><a href="#">文章</a><a href="#">關於</a><a href="#">RSS</a></nav>
+        </div></header>
+        <main class="page">
+          <h1 class="page-title">文章</h1>
+          <div class="search">
+            <span class="i-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <input type="search" placeholder="搜尋文章標題、內文、標籤…">
+          </div>
+          <div class="bar">
+            <a class="chip chip--ghost lg soul" href="#">#ai-workflow<span class="num">5</span></a>
+            <a class="chip is-active lg" href="#">#tools<span class="num">3</span></a>
+            <a class="chip chip--ghost lg memory" href="#">#reflection<span class="num">3</span></a>
+            <a class="chip chip--ghost lg user" href="#">#claude<span class="num">3</span></a>
+            <button class="more" type="button">更多篩選
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="count"><span>共 3 篇</span><span class="sep">·</span><span>篩選中</span><span class="active">#tools</span>
+            <a class="clear" href="#"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+          </div>
+          <div class="list"><article class="card">
+            <div class="meta"><time>2026.07.28</time><span>·</span><span>9 分鐘</span></div>
+            <h2><a href="#">如何監測自己的AI到底都做了什麼？做一個可視化儀表板吧！</a></h2>
+            <p>「你不是說每天晚上都會自動整理嗎？我怎麼都沒看到？」它確實有整理——問題從來不是它沒記住，而是它記住的東西沒有一個出口。</p>
+            <div class="tags">
+              <span class="chip chip--solid soul">#ai-workflow</span>
+              <span class="chip chip--solid soul">#tools</span>
+              <span class="chip chip--solid memory">#reflection</span>
+            </div>
+          </article></div>
+          <div class="cut">— 以下省略第 2、3 篇 —</div>
+        </main>
+      </div>
+    </div>
+    <aside class="note">
+      <dl>
+        <dt>篩選區高度</dt><dd class="h"><span id="h-1">–</span><small id="d-1"></small></dd>
+        <dt>優點</dt><dd>
+          <ul>
+            <li>高度降最多，而且不用展開就能點常用 tag</li>
+            <li>一排 chip 讀起來像麵包屑，重量最輕</li>
+            <li>12 個 tag 有 5 個篩完只剩 1 篇，前 4 顆其實已覆蓋大多數有意義的篩選</li>
+          </ul>
+        </dd>
+        <dt>缺點</dt><dd>
+          <ul>
+            <li>失去主題／類型／工具的分組語意，讀者看不出這個 blog 有三層標籤</li>
+            <li>「常用」怎麼排要有人決定：自動取前 N 會隨發文漂移，手寫清單要維護</li>
+            <li>唯一需要自寫 popover 的方案：click-outside、Esc、焦點、aria-expanded</li>
+          </ul>
+        </dd>
+        <dt>推薦程度</dt><dd><span class="stars">★★★</span>☆☆</dd>
+      </dl>
+      <a class="go" href="option-1-compact-filter-bar.html">看完整方案 1（含 popover 展開示意 + mobile）</a>
+    </aside>
+  </div>
+
+  <!-- ── 方案 2 ─────────────────────────────────────── -->
+  <div class="row" id="row-2">
+    <div>
+      <div class="row-head"><h2>方案 2 — Inline minimal chips</h2><span class="kind rec">★ 推薦方案</span></div>
+      <div class="preview">
+        <header class="site"><div class="site-inner">
+          <a class="brand" href="#"><span class="dot"></span>Abby.log</a>
+          <nav class="nav"><a href="#">首頁</a><a href="#">文章</a><a href="#">關於</a><a href="#">RSS</a></nav>
+        </div></header>
+        <main class="page">
+          <h1 class="page-title">文章</h1>
+          <div class="search">
+            <span class="i-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <input type="search" placeholder="搜尋文章標題、內文、標籤…">
+          </div>
+          <div class="filter-zone">
+            <div class="grp"><span class="grp-label">主題</span>
+              <a class="chip chip--ghost soul" href="#">#ai-workflow<span class="num">5</span></a>
+              <a class="chip chip--ghost soul" href="#">#design-thinking<span class="num">2</span></a>
+              <a class="chip is-active" href="#">#tools<span class="num">3</span></a>
+              <a class="chip chip--ghost soul" href="#">#career<span class="num">1</span></a>
+              <a class="chip chip--ghost soul" href="#">#lifestyle<span class="num">1</span></a>
+            </div>
+            <div class="grp"><span class="grp-label">類型</span>
+              <a class="chip chip--ghost memory" href="#">#tutorial<span class="num">1</span></a>
+              <a class="chip chip--ghost memory" href="#">#reflection<span class="num">3</span></a>
+              <a class="chip chip--ghost memory" href="#">#case-study<span class="num">2</span></a>
+              <a class="chip chip--ghost memory" href="#">#experiment<span class="num">1</span></a>
+              <a class="chip chip--ghost memory" href="#">#mindset<span class="num">2</span></a>
+            </div>
+            <div class="grp"><span class="grp-label">工具</span>
+              <a class="chip chip--ghost user" href="#">#claude<span class="num">3</span></a>
+              <a class="chip chip--ghost user" href="#">#video<span class="num">1</span></a>
+            </div>
+          </div>
+          <div class="count"><span>共 3 篇</span><span class="sep">·</span><span>篩選中</span><span class="active">#tools</span>
+            <a class="clear" href="#"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+          </div>
+          <div class="list"><article class="card">
+            <div class="meta"><time>2026.07.28</time><span>·</span><span>9 分鐘</span></div>
+            <h2><a href="#">如何監測自己的AI到底都做了什麼？做一個可視化儀表板吧！</a></h2>
+            <p>「你不是說每天晚上都會自動整理嗎？我怎麼都沒看到？」它確實有整理——問題從來不是它沒記住，而是它記住的東西沒有一個出口。</p>
+            <div class="tags">
+              <span class="chip chip--solid soul">#ai-workflow</span>
+              <span class="chip chip--solid soul">#tools</span>
+              <span class="chip chip--solid memory">#reflection</span>
+            </div>
+          </article></div>
+          <div class="cut">— 以下省略第 2、3 篇 —</div>
+        </main>
+      </div>
+    </div>
+    <aside class="note rec">
+      <dl>
+        <dt>篩選區高度</dt><dd class="h"><span id="h-2">–</span><small id="d-2"></small></dd>
+        <dt>優點</dt><dd>
+          <ul>
+            <li>三層標籤結構完整保留——這是這個 blog 的資訊架構特色</li>
+            <li>沒有新互動狀態、沒有 popover、沒有 a11y 新風險，幾乎純樣式</li>
+            <li>「未選取 = 無底色、選取 = 實心」讓顏色從裝飾變成狀態指示</li>
+            <li>「篩選中」上移到「共 N 篇」那列，順手修掉狀態太弱的問題</li>
+            <li>三案裡最容易反悔的一個，不喜歡就退回去</li>
+          </ul>
+        </dd>
+        <dt>缺點</dt><dd>
+          <ul>
+            <li>高度降幅不如另外兩案</li>
+            <li>文章長到 20+ 篇、tag 池變滿之後，三列會慢慢長回來</li>
+            <li>淡色 chip 對比度下降，白底可讀性要實際看過</li>
+          </ul>
+        </dd>
+        <dt>推薦程度</dt><dd><span class="stars">★★★★★</span></dd>
+      </dl>
+      <a class="go" href="option-2-inline-minimal-chips.html">看完整方案 2（含 mobile 375px）</a>
+    </aside>
+  </div>
+
+  <!-- ── 方案 3 ─────────────────────────────────────── -->
+  <div class="row" id="row-3">
+    <div>
+      <div class="row-head"><h2>方案 3 — Collapsible filter panel</h2><span class="kind">首屏最乾淨</span></div>
+      <div class="preview">
+        <header class="site"><div class="site-inner">
+          <a class="brand" href="#"><span class="dot"></span>Abby.log</a>
+          <nav class="nav"><a href="#">首頁</a><a href="#">文章</a><a href="#">關於</a><a href="#">RSS</a></nav>
+        </div></header>
+        <main class="page">
+          <h1 class="page-title">文章</h1>
+          <div class="search">
+            <span class="i-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <input type="search" placeholder="搜尋文章標題、內文、標籤…">
+          </div>
+          <div class="summary-row">
+            <span>篩選：</span>
+            <span class="chip is-active">#tools</span>
+            <a class="clear" href="#"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+            <button class="toggle" type="button">展開篩選
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="count"><span>共 3 篇</span></div>
+          <div class="list"><article class="card">
+            <div class="meta"><time>2026.07.28</time><span>·</span><span>9 分鐘</span></div>
+            <h2><a href="#">如何監測自己的AI到底都做了什麼？做一個可視化儀表板吧！</a></h2>
+            <p>「你不是說每天晚上都會自動整理嗎？我怎麼都沒看到？」它確實有整理——問題從來不是它沒記住，而是它記住的東西沒有一個出口。</p>
+            <div class="tags">
+              <span class="chip chip--solid soul">#ai-workflow</span>
+              <span class="chip chip--solid soul">#tools</span>
+              <span class="chip chip--solid memory">#reflection</span>
+            </div>
+          </article></div>
+          <div class="cut">— 以下省略第 2、3 篇；展開狀態請看完整檔案 —</div>
+        </main>
+      </div>
+    </div>
+    <aside class="note">
+      <dl>
+        <dt>篩選區高度（收合）</dt><dd class="h"><span id="h-3">–</span><small id="d-3"></small></dd>
+        <dt>優點</dt><dd>
+          <ul>
+            <li>首屏最乾淨，而且功能一個都沒少</li>
+            <li>「篩選：#tools ✕」獨立一行，篩選狀態是三案裡最清楚的</li>
+            <li>mobile 效果最好，第一篇文章幾乎貼著搜尋框</li>
+          </ul>
+        </dd>
+        <dt>缺點</dt><dd>
+          <ul>
+            <li>篩選入口被藏起來，個人 blog 讀者本來就少，多一次點擊會直接壓低標籤使用率</li>
+            <li>點 tag = 換頁，展開狀態會被重置——選完一個 tag 面板就自己收起來</li>
+            <li>展開／收合的高度跳動要配一點動畫，不然畫面會閃</li>
+            <li>8 篇文章的規模其實還用不到收合</li>
+          </ul>
+        </dd>
+        <dt>推薦程度</dt><dd><span class="stars">★★★</span>☆☆</dd>
+      </dl>
+      <a class="go" href="option-3-collapsible-filter-panel.html">看完整方案 3（含展開示意 + mobile）</a>
+    </aside>
+  </div>
+
+</div>
+
+<footer class="doc-foot">
+  這是靜態 mockup，不依賴 build，也沒有動到 <code>src/</code>。文字版方案與實作風險清單見
+  <code>docs/design-proposal/blog-filter-compact-options.md</code>；本頁的看點與下一步見
+  <code>comparison.md</code>。
+</footer>
+
+<script>
+function band(rowId){
+  var row=document.getElementById(rowId);
+  if(!row)return null;
+  var s=row.querySelector('.search');
+  var c=row.querySelector('.count');
+  if(!s||!c)return null;
+  return Math.round(c.getBoundingClientRect().top-s.getBoundingClientRect().bottom);
+}
+function put(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+function measure(){
+  var base=band('row-base');
+  var vals={'base':base,'1':band('row-1'),'2':band('row-2'),'3':band('row-3')};
+  Object.keys(vals).forEach(function(k){
+    var v=vals[k];
+    if(v===null)return;
+    put('h-'+k, v+' px');
+    put('t-'+k, v+' px');
+    if(k!=='base'&&base){
+      var pct=Math.round((v-base)/base*100);
+      put('d-'+k, pct+'%');
+    }
+  });
+}
+window.addEventListener('load',measure);
+window.addEventListener('resize',measure);
+</script>
+</body>
+</html>
