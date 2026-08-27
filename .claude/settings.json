@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/writing-review-gate.sh\"",
+            "timeout": 20,
+            "statusMessage": "檢查文章是否通過寫作審查"
+          }
+        ]
+      }
+    ]
+  }
+}
