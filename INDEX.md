@@ -91,7 +91,7 @@ abby-log/
 
 | 類型 | 路徑 |
 |------|------|
-| 文章原文 | `content/blog/*.mdx` |
+| 文章原文 | `blog-app/src/content/blog/*.mdx` |
 | 文章圖片 | `content/images/<slug>/` |
 | 改稿進度 | `workspace/docs/` |
 | 寫作規則 | `workspace/writing/WRITING-PLAYBOOK.md` |

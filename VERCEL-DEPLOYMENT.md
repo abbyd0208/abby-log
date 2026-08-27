@@ -6,10 +6,10 @@
 
 ```
 abby-log/
-├── content/blog/        ← 文章來源（真相所在，13 篇 .mdx）
-├── content/images/      ← 圖片來源
+├── content/images/      ← 圖片來源（文章本體在 blog-app/src/content/blog/）
 ├── blog-app/            ← Next.js app，Vercel 的 Root Directory
-│   ├── src/lib/posts.ts             讀 ../content/blog
+│   ├── src/content/blog/            ← 文章真相所在（13 篇 .mdx）
+│   ├── src/lib/posts.ts             讀 src/content/blog
 │   ├── scripts/copy-content-images.mjs  build 前把 content/images 複製進 public/
 │   └── public/images                ← 產物，不進 git
 ├── src/ public/ ...     ← 舊版 app，未使用，待清理
@@ -29,11 +29,13 @@ Error: Cannot copy '../../content/images' to a subdirectory of itself, '../../co
 注意這發生在 `next build` **成功之後**的檔案收集階段——build log 會看到頁面都產出了才報錯。
 現在改成 `prebuild` 實體複製一份，`predev` 也掛了同一個腳本，本機開發不用另外處理。
 
-### 路徑層數
+### 文章放哪
 
-`posts.ts` 的 `../content/blog` 是相對於 `blog-app/`。多算一層會跑到 repo 外面
-（本機變成 `/Users/content/blog`，Vercel 變成 `/content/blog`），build 不會報錯但文章數會是 0。
-2026-08-11 修過一次。
+`posts.ts` 讀 `blog-app/src/content/blog/`。**新增或修改文章請動這個資料夾**——
+repo 根的 `content/blog/` 曾經是來源，但沒有任何腳本會把它複製過去，
+留著只會讓人改錯地方（2026-08-27 已移除）。
+
+改錯地方不會報錯，只是文章不會出現在網站上。要確認，跑 `npm run dev` 數一下 `/blog` 的篇數。
 
 ## Vercel 專案設定
 
@@ -66,7 +68,7 @@ npm start -- -p 3111
 ```
 
 檢查重點：
-- build 輸出的 `/blog/[slug]` 頁數要等於 `content/blog/` 的 .mdx 數量（目前 13）
+- build 輸出的 `/blog/[slug]` 頁數要等於 `blog-app/src/content/blog/` 的 .mdx 數量（目前 13）
 - 文章頁的圖片要真的載入（複製沒跑到時 HTML 仍有 `<img>`，但圖是破的）
 
 build 有一則 warning 說偵測到兩個 lockfile（repo 根與 `blog-app/`），選了 repo 根當 workspace root。
