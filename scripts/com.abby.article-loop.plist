@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.abby.article-loop</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>/Users/abbyting/abby-log/scripts/article-loop.sh</string>
+	</array>
+	<!-- 每週日 10:00。不用每晚跑：8/2-8/5 四天只出得了 2 篇能公開的，
+	     每天跑等於每天燒一次 token 去得到「這週沒東西可寫」。 -->
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Weekday</key>
+		<integer>0</integer>
+		<key>Hour</key>
+		<integer>10</integer>
+		<key>Minute</key>
+		<integer>0</integer>
+	</dict>
+	<key>StandardOutPath</key>
+	<string>/Users/abbyting/.claude/logs/article-loop.out.log</string>
+	<key>StandardErrorPath</key>
+	<string>/Users/abbyting/.claude/logs/article-loop.err.log</string>
+</dict>
+</plist>
