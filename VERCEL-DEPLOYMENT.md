@@ -70,8 +70,6 @@ npm start -- -p 3111
 - build 輸出的 `/blog/[slug]` 頁數要等於 `blog-app/src/content/blog/` 的 .mdx 數量（目前 13）
 - 文章頁的圖片要真的載入（複製沒跑到時 HTML 仍有 `<img>`，但圖是破的）
 
-build 有一則 warning 說偵測到兩個 lockfile（repo 根與 `blog-app/`），選了 repo 根當 workspace root。
-不影響結果；要消掉就在 `blog-app/next.config.ts` 設 `turbopack.root`，或等舊版 app 清掉後自然消失。
 
 ## 部署後
 
