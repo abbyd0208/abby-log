@@ -67,19 +67,20 @@
 
 ```
 abby-log/
-├── content/               ← 所有文章、圖片、草稿
-│   ├── blog/             (13 篇已發布文章 .mdx)
-│   ├── images/           (所有文章配圖)
-│   ├── drafts/           (草稿區)
-│   └── archive/          (舊版本)
+├── content/               ← 圖片來源
+│   └── images/           (所有文章配圖)
 ├── workspace/            ← 工作文件、進度報告
 │   ├── docs/             (改稿進度、複評記錄)
 │   └── writing/          (Playbook、seeds、參考文檔)
-├── blog-app/             ← Next.js 網站專案（build 出來的）
+├── blog-app/             ← 網站本體，Vercel 的 Root Directory
+│   ├── src/content/blog/ (13 篇文章 .mdx，帶 draft: true 的只在 dev 顯示)
 │   ├── src/
-│   ├── public/images → symlink 指向 ../../../content/images
+│   ├── public/images/    (build 產物，copy-content-images.mjs 從 content/images 複製)
 │   ├── package.json
 │   └── next.config.ts
+├── writing/              ← 不參與 build
+│   ├── seeds/            (題目候選)
+│   └── drafts/content-blog/  (寫完但不公開的稿)
 ├── INDEX.md              ← 📍 你在這裡
 └── .claude/              ← Claude Code 工作檔
     └── worktrees/        (舊的設計迭代環境)
@@ -91,7 +92,7 @@ abby-log/
 
 | 類型 | 路徑 |
 |------|------|
-| 文章原文 | `content/blog/*.mdx` |
+| 文章原文 | `blog-app/src/content/blog/*.mdx` |
 | 文章圖片 | `content/images/<slug>/` |
 | 改稿進度 | `workspace/docs/` |
 | 寫作規則 | `workspace/writing/WRITING-PLAYBOOK.md` |

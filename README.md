@@ -8,6 +8,7 @@
 
 ```bash
 nvm use
+cd blog-app
 npm install
 npm run dev      # http://localhost:3000
 npm run build    # 產生靜態頁面
@@ -29,7 +30,9 @@ draft: true                                       # 選填，草稿只在 dev �
 ---
 ```
 
-圖片放 `public/images/<slug>/`，內文用 `/images/<slug>/01.png` 引用。
+圖片放 `content/images/<slug>/`，內文用 `/images/<slug>/01.png` 引用。
+
+**不要直接放進 `blog-app/public/images/`**——那是 `copy-content-images.mjs` 在 build 前產生的複本，已經被 gitignore，放進去不會進 git，Vercel build 完圖是破的。
 
 ## 標籤
 
@@ -49,16 +52,22 @@ icon 用 [Lucide](https://lucide.dev)（ISC 授權）。
 ## 結構
 
 ```
-src/
-├── app/            # 路由：/、/blog、/blog/[slug]、/about、/feed.xml、sitemap、robots
-├── components/     # Header / Footer / PostCard / TagPill / Toc / Mdx / BlogBrowser（搜尋）
-├── lib/            # posts.ts（讀 MDX）、site.ts（站台設定與標籤）、format.ts
-└── content/blog/   # 文章
+blog-app/           # 網站本體，Vercel 的 Root Directory
+├── src/app/        # 路由：/、/blog、/blog/[slug]、/about、/drafts、/feed.xml、sitemap、robots
+├── src/components/ # Header / Footer / PostCard / TagPill / Toc / Mdx / BlogBrowser（搜尋）
+├── src/lib/        # posts.ts（讀 MDX）、drafts.ts、site.ts、format.ts
+├── src/content/blog/   # 文章本體（帶 draft: true 的只在 dev 顯示）
+└── public/images/  # build 產物，由 content/images 複製而來，不要手動放檔案
+
+content/images/     # 圖片來源，放在這裡
 
 writing/            # 不參與 build
-├── WRITING-PLAYBOOK.md   # 結構樣板、素材規範、Medium 平台坑
-├── seeds/                # 素材袋（寫作前的原料）
-└── archive/<slug>/       # 發布前原稿與 HTML 閱讀版
+├── WRITING-PLAYBOOK.md      # 結構樣板、素材規範、Medium 平台坑
+├── seeds/                   # 題目候選
+├── drafts/content-blog/     # 寫完但不公開的稿
+└── archive/<slug>/          # 發布前原稿與 HTML 閱讀版
 ```
+
+npm 指令一律在 `blog-app/` 底下跑，repo 根層沒有 `package.json`。
 
 搜尋是純前端比對（`BlogBrowser`），索引在 build 時就備好，不打任何 API。

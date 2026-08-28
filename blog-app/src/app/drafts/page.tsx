@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getDrafts, type DraftPost } from "@/lib/drafts";
 import { formatDate } from "@/lib/format";
 import { TagPill } from "@/components/TagPill";
+import { DraftTools } from "@/components/DraftTools";
+import { listSeeds } from "@/lib/seeds";
 
 // proxy 已用 HTTP Basic Auth 保護 /drafts；頁面可靜態產生。
 
@@ -23,6 +25,9 @@ const sourceLabel: Record<DraftPost["source"], string> = {
 
 export default function DraftsPage() {
   const { posts, errors } = getDrafts();
+  // 編輯與發布會寫入 repo，只有本機做得到：Vercel 檔案系統唯讀，
+  // 而且 src/content/drafts 是 build 時的複本，寫進去不會留存。
+  const editable = process.env.NODE_ENV === "development";
 
   return (
     <section>
@@ -30,6 +35,8 @@ export default function DraftsPage() {
       <p className="mt-3 text-[14.5px] text-ink-2">
         共 {posts.length} 篇待發布草稿。這頁與底下每一篇都標了 noindex，不會進 RSS 或 sitemap。
       </p>
+
+      {editable && <DraftTools seeds={listSeeds()} />}
 
       {errors.length > 0 && (
         <div className="mt-6 rounded-xl border border-user/30 bg-user-bg/50 px-4 py-3.5">
