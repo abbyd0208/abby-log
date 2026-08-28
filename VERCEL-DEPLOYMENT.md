@@ -2,7 +2,7 @@
 
 ## 專案結構
 
-這個 repo 有兩份東西並存，部署只用到 `blog-app/`：
+網站程式全部在 `blog-app/`（repo 根層曾經有一份重複的舊 app，2026-08-28 移除）：
 
 ```
 abby-log/
@@ -12,7 +12,6 @@ abby-log/
 │   ├── src/lib/posts.ts             讀 src/content/blog
 │   ├── scripts/copy-content-images.mjs  build 前把 content/images 複製進 public/
 │   └── public/images                ← 產物，不進 git
-├── src/ public/ ...     ← 舊版 app，未使用，待清理
 └── writing/ workspace/  ← 寫作素材與工作檔，不參與 build
 ```
 
