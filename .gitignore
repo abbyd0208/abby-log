@@ -50,3 +50,6 @@ blog-app/public/images/
 
 # blog-app/src/content/drafts 由 scripts/copy-content-drafts.mjs 從 writing/drafts/content-blog 產生
 blog-app/src/content/drafts/
+
+# writing-review hook 的本機狀態（記哪些文章已通過審查）
+.claude/state/

@@ -17,6 +17,17 @@
 
 原稿與素材留在 `writing/`：`writing/seeds/<slug>.md`（素材袋）、`writing/archive/<slug>/`（發布前原稿與 HTML 閱讀版）。這兩個目錄不會被 `getAllPosts()` 讀到，只有 `src/content/blog/*.mdx` 才是文章。
 
+## 專案結構的兩條硬規則
+
+**一、npm 指令一律先 `cd blog-app`。不要在 repo 根建 `package.json` 或 lockfile。**
+根層那份重複的舊 app 是 2026-08-28 刻意移除的——它跟 `blog-app/` 並存時兩邊會漂開，
+而且改錯那份不會報錯，只是網站沒變。看到根層 `npm` 噴 ENOENT 是預期行為，不要「順手修好」。
+
+**二、圖片放 `content/images/<slug>/`，不要放 `blog-app/public/images/`。**
+後者是 `copy-content-images.mjs` 在 build 前產生的複本，已被 gitignore。
+放進去不會進 git，Vercel build 完圖是破的。也不要把它改回 symlink——
+指向 repo 根以外的 symlink 會讓 Vercel 收集檔案時失敗（2026-08-27 踩過）。
+
 ## 選題紅線：客戶專案內容不轉公開文章
 
 跟客戶專案有關、尤其牽涉產品細部結構、資料模型、欄位來源、需求優先度、客戶決策、內部工作分解的內容，**不要寫成 Abby.log 公開文章**。

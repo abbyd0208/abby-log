@@ -5,6 +5,8 @@ import { Mdx } from "@/components/Mdx";
 import { TagPill } from "@/components/TagPill";
 import { Toc, hasToc } from "@/components/Toc";
 import { formatDate } from "@/lib/format";
+import { DraftEditor } from "@/components/DraftEditor";
+import { blockedReasonFor } from "@/lib/draft-edit";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -86,9 +88,21 @@ export default async function DraftPostPage({ params }: Props) {
 
       <Toc headings={draft.headings} />
 
-      <div className="mt-8">
-        <Mdx source={draft.content} glossaryContext={draft.glossaryContext} />
-      </div>
+      {process.env.NODE_ENV === "development" ? (
+        <DraftEditor
+          slug={draft.slug}
+          source={draft.source}
+          blockedReason={blockedReasonFor(draft.slug)}
+        >
+          <div className="mt-8">
+            <Mdx source={draft.content} glossaryContext={draft.glossaryContext} />
+          </div>
+        </DraftEditor>
+      ) : (
+        <div className="mt-8">
+          <Mdx source={draft.content} glossaryContext={draft.glossaryContext} />
+        </div>
+      )}
     </article>
   );
 }

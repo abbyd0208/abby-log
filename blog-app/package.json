@@ -2,6 +2,9 @@
   "name": "abby-log",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "copy-images": "node scripts/copy-content-images.mjs",
     "copy-drafts": "node scripts/copy-content-drafts.mjs",
