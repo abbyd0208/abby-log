@@ -7,7 +7,7 @@ import type { DraftSource } from "@/lib/drafts";
 type Props = {
   slug: string;
   source: DraftSource;
-  /** manifest 判定不公開的理由，有值就不給發布 */
+  /** 不給發布的理由（manifest 判定不公開，或還沒通過寫作審查），null 才給發 */
   blockedReason: string | null;
   /** 目錄。必須跟內文相鄰地交給 grid，中間不能插進跨欄元素 */
   toc: ReactNode;
@@ -163,7 +163,7 @@ export function DraftEditor({ slug, source, blockedReason, toc, children }: Prop
 
       {blockedReason && (
         <p className="post-span mt-2 text-[12.5px] leading-relaxed text-user">
-          manifest 判定不公開：{blockedReason}
+          {blockedReason}
         </p>
       )}
 

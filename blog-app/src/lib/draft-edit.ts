@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DraftSource } from "./drafts";
+import { carryPass, hasPassed } from "./review-state";
 
 /**
  * /drafts 的寫入層。只在本機 dev 有效——Vercel 檔案系統唯讀，
@@ -103,6 +104,24 @@ export function blockedReasonFor(slug: string): string | null {
   return status.replace(/^❌\s*/, "").trim();
 }
 
+/**
+ * 發布鈕該不該是 disabled。兩個理由：manifest 判定不公開，或還沒通過寫作審查。
+ * 跟 publish() 用同一組判準——按下去才失敗是很差的體驗。
+ */
+export function publishBlockReason(slug: string, source: DraftSource): string | null {
+  const manifest = blockedReasonFor(slug);
+  if (manifest) return `manifest 判定不公開：${manifest}`;
+  try {
+    const abs = filePathFor(slug, source);
+    if (!hasPassed(abs, fs.readFileSync(abs, "utf8"))) {
+      return "還沒通過寫作審查——用 writing-review 審完並記錄通過才能發布";
+    }
+  } catch {
+    // 讀不到檔就交給 publish() 自己報錯
+  }
+  return null;
+}
+
 export function publish(slug: string, source: DraftSource): string {
   assertDev();
   safeSlug(slug);
@@ -119,12 +138,23 @@ export function publish(slug: string, source: DraftSource): string {
     throw new DraftEditError("標題還帶著 delete- 前綴，先確認這篇是不是真的要發");
   }
 
+  // 沒通過寫作審查就不給發。封存區那批從沒被 Stop hook 掃過，
+  // 這是它們唯一會被擋下來的地方。
+  const sourcePath = filePathFor(slug, source);
+  if (!hasPassed(sourcePath, raw)) {
+    throw new DraftEditError(
+      `這篇還沒通過寫作審查，拒絕發布。用 writing-review 審完後跑：` +
+        `.claude/hooks/writing-review-gate.sh pass ${path.relative(REPO_ROOT, sourcePath)}`,
+    );
+  }
+
   const target = filePathFor(slug, "content");
   if (source === "archive" && fs.existsSync(target)) {
     throw new DraftEditError(`${slug}.mdx 已經在 src/content/blog，先處理掉那一份`);
   }
 
   fs.writeFileSync(target, published, "utf8");
+  carryPass(sourcePath, target, published);
   // 從封存區發布時，本尊留著當歷史，不搬走——避免兩邊都消失
   return slug;
 }

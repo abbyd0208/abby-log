@@ -6,7 +6,7 @@ import { TagPill } from "@/components/TagPill";
 import { Toc, hasToc } from "@/components/Toc";
 import { formatDate } from "@/lib/format";
 import { DraftEditor } from "@/components/DraftEditor";
-import { blockedReasonFor } from "@/lib/draft-edit";
+import { publishBlockReason } from "@/lib/draft-edit";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -90,7 +90,7 @@ export default async function DraftPostPage({ params }: Props) {
         <DraftEditor
           slug={draft.slug}
           source={draft.source}
-          blockedReason={blockedReasonFor(draft.slug)}
+          blockedReason={publishBlockReason(draft.slug, draft.source)}
           toc={<Toc headings={draft.headings} />}
         >
           <div className="mt-8">
