@@ -87,6 +87,14 @@ export function DraftTools({ seeds }: Props) {
                     </div>
                     <div className="mt-1 flex items-center gap-2 overflow-hidden whitespace-nowrap text-[11.5px] text-ink-3">
                       <span className="shrink-0 tabular-nums">{item.fileDate}</span>
+                      {item.risk && (
+                        <span
+                          className="shrink-0 text-[11.5px] text-ink-3"
+                          title={item.risk}
+                        >
+                          風險 {item.risk.replace(/[。，].*$/, "")}
+                        </span>
+                      )}
                       {item.readiness && (
                         <>
                           <span aria-hidden className="shrink-0">·</span>

@@ -8,7 +8,8 @@
   "scripts": {
     "copy-images": "node scripts/copy-content-images.mjs",
     "copy-drafts": "node scripts/copy-content-drafts.mjs",
-    "predev": "npm run copy-images && npm run copy-drafts",
+    "sync-seeds": "node ../scripts/sync-hermes-seeds.mjs || true",
+    "predev": "npm run copy-images && npm run copy-drafts && npm run sync-seeds",
     "dev": "next dev",
     "prebuild": "npm run copy-images && npm run copy-drafts",
     "build": "next build",
