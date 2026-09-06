@@ -10,13 +10,15 @@ flowchart TD
         B2["article-loop 每週日 10:00<br/>scripts/article-loop.sh"]
     end
 
-    A1 --> B1
     A1 --> B2
+    WORK["工作目錄"] --> B1
 
-    B1 -. "斷點：只送 Telegram<br/>39 份沒進 repo" .-> BROKEN["writing/seeds/"]
-    B2 --> SEEDS["writing/seeds/daily-seeds-DATE.md"]
+    B1 --> SYNC["sync-hermes-seeds.mjs<br/>npm run dev 前跑一次<br/>article-loop 開頭也跑一次"]
+    SYNC --> SEEDS["writing/seeds/daily-seeds-DATE.md"]
+    B2 -. "2026-09-06 起不再出題<br/>只挑 + 寫 + 複評" .-> SEEDS
 
-    SEEDS --> C{"紅線篩選<br/>客戶專案內容不轉公開文章"}
+    SEEDS --> PICK["article-loop 挑一題<br/>近期對話裡找得到素材才寫"]
+    PICK --> C{"紅線複核<br/>客戶專案內容不轉公開文章"}
     C -->|"判定：不可寫"| MANIFEST["seeds-to-blog-manifest.md<br/>程式會擋：不給建草稿、不給發布"]
     C -->|"判定：可寫"| D["動筆成草稿<br/>src/content/blog/SLUG.mdx<br/>強制 draft: true、canonical 空"]
 
@@ -27,7 +29,9 @@ flowchart TD
     F -->|"過"| G
 
     G["Abby 在 /drafts 驗收<br/>紅線、標題、語氣、視覺素材"]
-    G --> H["按發布鈕<br/>拿掉 draft 旗標"]
+    G --> GATE{"發布閘門<br/>manifest 判定＋寫作審查通過紀錄"}
+    GATE -->|"未通過"| G
+    GATE -->|"通過"| H["按發布鈕<br/>拿掉 draft 旗標"]
     H --> I["Medium 發文"]
     I --> J["回填 canonical"]
     J --> K["commit / push<br/>Vercel 靜態產生"]
@@ -45,7 +49,6 @@ flowchart TD
     classDef human fill:#fdeee0,stroke:#c08040,color:#5a3512
     classDef broken fill:#fbe9e9,stroke:#b45454,color:#5a1c1c
 
-    class A1,A2,B1,B2,SEEDS,D auto
-    class C,E,F,M,MANIFEST gate
+    class A1,A2,B1,B2,SEEDS,SYNC,PICK,WORK,D auto
+    class C,E,F,M,MANIFEST,GATE gate
     class G,H,I,J,K human
-    class BROKEN broken
