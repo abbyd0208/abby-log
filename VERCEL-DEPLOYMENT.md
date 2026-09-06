@@ -1,5 +1,18 @@
 # Vercel 部署步驟
 
+## 正式網址
+
+**https://abby-log.vercel.app**（有連字號）
+
+Vercel 專案名 `abby-log`，team `abbys-projects-707dcc98`。
+2026-09-06 記下來的原因：這份文件原本沒寫網址，而 `src/lib/site.ts` 的 fallback 值
+少了連字號（`abbylog.vercel.app`），照著它連過去整站 404，得去翻 Vercel CLI 才找得到。
+
+| 路徑 | 線上狀態 |
+|---|---|
+| `/`、`/blog`、`/about`、`/glossary` | 200 |
+| `/drafts` | **503**，因為下面那兩個環境變數還沒設 |
+
 ## 專案結構
 
 網站程式全部在 `blog-app/`（repo 根層曾經有一份重複的舊 app，2026-08-28 移除）：
@@ -52,8 +65,16 @@ repo 根目錄刻意**沒有** `vercel.json`。Root Directory 設成 `blog-app` 
 | 變數 | 用途 | 必填 |
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | sitemap、robots、RSS、canonical 的站台網址 | 否 |
+| `DRAFTS_USER` | `/drafts` 的 Basic Auth 帳號 | 要用 `/drafts` 才需要 |
+| `DRAFTS_PASSWORD` | `/drafts` 的 Basic Auth 密碼 | 同上 |
 
-沒設會 fallback 到 `src/lib/site.ts` 裡的預設值。拿到正式網域後設定，否則 sitemap 與 RSS 會指向錯的網址。
+`NEXT_PUBLIC_SITE_URL` 沒設會 fallback 到 `src/lib/site.ts` 的預設值（目前已對齊正式網域）。
+
+`DRAFTS_USER` / `DRAFTS_PASSWORD` 沒設時 `/drafts` 回 **503**，不會默默放行——
+這是刻意的，寧可整條路關掉也不要把未發布的草稿公開。設好後 redeploy 才會生效。
+
+線上的 `/drafts` 一律唯讀：編輯與發布的進入點都有 `assertDev()`，而且 Vercel 檔案系統唯讀。
+要編輯或發布只能在本機 `npm run dev`（本機帳密放 `blog-app/.env.local`，該檔已被 gitignore）。
 
 ## 本機驗證
 
