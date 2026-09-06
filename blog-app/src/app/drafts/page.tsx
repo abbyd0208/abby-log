@@ -5,6 +5,7 @@ import { formatDate } from "@/lib/format";
 import { TagPill } from "@/components/TagPill";
 import { DraftTools } from "@/components/DraftTools";
 import { listSeeds } from "@/lib/seeds";
+import { pipelineWarnings } from "@/lib/pipeline-status";
 
 // proxy 已用 HTTP Basic Auth 保護 /drafts；頁面可靜態產生。
 
@@ -28,6 +29,8 @@ export default function DraftsPage() {
   // 編輯與發布會寫入 repo，只有本機做得到：Vercel 檔案系統唯讀，
   // 而且 src/content/drafts 是 build 時的複本，寫進去不會留存。
   const editable = process.env.NODE_ENV === "development";
+  // 兩支自動化跑掛掉時只會留在 log 裡，沒人會去看。這裡是本來就會來的地方。
+  const warnings = pipelineWarnings();
 
   return (
     <section>
@@ -35,6 +38,24 @@ export default function DraftsPage() {
       <p className="mt-3 text-[14.5px] text-ink-2">
         共 {posts.length} 篇待發布草稿。這頁與底下每一篇都標了 noindex，不會進 RSS 或 sitemap。
       </p>
+
+      {warnings.length > 0 && (
+        <ul className="mt-5 space-y-1.5">
+          {warnings.map((warning) => (
+            <li
+              key={warning.text}
+              className={[
+                "rounded-lg border px-3.5 py-2 text-[12.5px] leading-relaxed",
+                warning.tone === "warn"
+                  ? "border-user/30 bg-user-bg/50 text-user"
+                  : "border-line bg-inset text-ink-2",
+              ].join(" ")}
+            >
+              {warning.text}
+            </li>
+          ))}
+        </ul>
+      )}
 
       {editable && <DraftTools seeds={listSeeds()} />}
 
