@@ -1,0 +1,51 @@
+flowchart TD
+    subgraph SRC["素材"]
+        A1["Claude Code 對話 log<br/>~/.claude/projects/**/*.jsonl"]
+        A2["nightly-digest 每晚 23:10<br/>寫 memory/daily-log.md"]
+        A1 --> A2
+    end
+
+    subgraph SEED["出題"]
+        B1["hermes cron 每天 09:00<br/>~/.hermes/cron/output/"]
+        B2["article-loop 每週日 10:00<br/>scripts/article-loop.sh"]
+    end
+
+    A1 --> B1
+    A1 --> B2
+
+    B1 -. "斷點：只送 Telegram<br/>39 份沒進 repo" .-> BROKEN["writing/seeds/"]
+    B2 --> SEEDS["writing/seeds/daily-seeds-DATE.md"]
+
+    SEEDS --> C{"紅線篩選<br/>客戶專案內容不轉公開文章"}
+    C -->|"判定：不可寫"| MANIFEST["seeds-to-blog-manifest.md<br/>程式會擋：不給建草稿、不給發布"]
+    C -->|"判定：可寫"| D["動筆成草稿<br/>src/content/blog/SLUG.mdx<br/>強制 draft: true、canonical 空"]
+
+    D --> E["writing-review Stop hook<br/>去 AI 味＋寫作慣例<br/>記內容雜湊，改了會重擋"]
+    E -->|"不過"| D
+    E -->|"過"| F["雙讀者複評<br/>2 個獨立 subAgent，各項 ≥ 4/5"]
+    F -->|"不過，最多兩輪"| D
+    F -->|"過"| G
+
+    G["Abby 在 /drafts 驗收<br/>紅線、標題、語氣、視覺素材"]
+    G --> H["按發布鈕<br/>拿掉 draft 旗標"]
+    H --> I["Medium 發文"]
+    I --> J["回填 canonical"]
+    J --> K["commit / push<br/>Vercel 靜態產生"]
+
+    subgraph APP["網站程式碼"]
+        L["改 blog-app/src 的 .tsx / .css"]
+        M["layout-review Stop hook<br/>五個寬度量測＋設計判斷"]
+        L --> M
+        M -->|"不過"| L
+        M -->|"過"| K
+    end
+
+    classDef auto fill:#e8f4ea,stroke:#5a8a63,color:#1f3d26
+    classDef gate fill:#eef1f7,stroke:#5c6b8a,color:#22293a
+    classDef human fill:#fdeee0,stroke:#c08040,color:#5a3512
+    classDef broken fill:#fbe9e9,stroke:#b45454,color:#5a1c1c
+
+    class A1,A2,B1,B2,SEEDS,D auto
+    class C,E,F,M,MANIFEST gate
+    class G,H,I,J,K human
+    class BROKEN broken
