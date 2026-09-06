@@ -57,7 +57,7 @@ export function DraftTools({ seeds }: Props) {
     <div className="mt-6 rounded-xl border border-line bg-inset px-4 py-3.5">
       <button
         onClick={() => setExpanded((value) => !value)}
-        className="flex w-full items-center gap-2 text-left"
+        className="-my-1 flex w-full items-center gap-2 py-1 text-left"
       >
         <span className="text-[13px] font-semibold">題目候選</span>
         <span className="tabular-nums text-[12.5px] text-ink-3">{open.length}</span>

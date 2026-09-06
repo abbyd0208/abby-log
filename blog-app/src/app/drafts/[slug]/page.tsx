@@ -86,22 +86,24 @@ export default async function DraftPostPage({ params }: Props) {
         )}
       </header>
 
-      <Toc headings={draft.headings} />
-
       {process.env.NODE_ENV === "development" ? (
         <DraftEditor
           slug={draft.slug}
           source={draft.source}
           blockedReason={blockedReasonFor(draft.slug)}
+          toc={<Toc headings={draft.headings} />}
         >
           <div className="mt-8">
             <Mdx source={draft.content} glossaryContext={draft.glossaryContext} />
           </div>
         </DraftEditor>
       ) : (
-        <div className="mt-8">
-          <Mdx source={draft.content} glossaryContext={draft.glossaryContext} />
-        </div>
+        <>
+          <Toc headings={draft.headings} />
+          <div className="mt-8">
+            <Mdx source={draft.content} glossaryContext={draft.glossaryContext} />
+          </div>
+        </>
       )}
     </article>
   );

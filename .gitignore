@@ -53,3 +53,4 @@ blog-app/src/content/drafts/
 
 # writing-review hook 的本機狀態（記哪些文章已通過審查）
 .claude/state/
+.mermaid.tmp.js

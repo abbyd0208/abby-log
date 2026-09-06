@@ -9,11 +9,13 @@ type Props = {
   source: DraftSource;
   /** manifest 判定不公開的理由，有值就不給發布 */
   blockedReason: string | null;
+  /** 目錄。必須跟內文相鄰地交給 grid，中間不能插進跨欄元素 */
+  toc: ReactNode;
   /** 伺服器端已經渲染好的文章，非編輯狀態時原樣顯示 */
   children: ReactNode;
 };
 
-export function DraftEditor({ slug, source, blockedReason, children }: Props) {
+export function DraftEditor({ slug, source, blockedReason, toc, children }: Props) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [raw, setRaw] = useState("");
@@ -177,7 +179,10 @@ export function DraftEditor({ slug, source, blockedReason, children }: Props) {
           className="post-span mt-6 w-full resize-y rounded-xl border border-line bg-page p-6 font-mono text-[14px] leading-[1.75] text-ink outline-none focus:border-soul/50"
         />
       ) : (
-        children
+        <>
+          {toc}
+          {children}
+        </>
       )}
     </>
   );

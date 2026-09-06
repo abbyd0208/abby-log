@@ -13,7 +13,7 @@ export function Header() {
       <div className="mx-auto flex max-w-[820px] items-center gap-6 px-6 py-3.5">
         <Link
           href="/"
-          className="flex items-center gap-2 text-[16px] font-bold tracking-[-0.02em]"
+          className="-my-1.5 flex items-center gap-2 py-1.5 text-[16px] font-bold tracking-[-0.02em]"
         >
           <span className="h-2 w-2 rounded-full bg-soul" aria-hidden />
           {site.name}
@@ -23,14 +23,14 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-ink"
+              className="-my-1.5 py-1.5 transition-colors hover:text-ink"
             >
               {item.label}
             </Link>
           ))}
           <a
             href="/feed.xml"
-            className="transition-colors hover:text-ink"
+            className="-my-1.5 py-1.5 transition-colors hover:text-ink"
             title="RSS"
           >
             RSS
