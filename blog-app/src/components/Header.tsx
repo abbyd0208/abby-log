@@ -7,13 +7,17 @@ const nav = [
   { href: "/about", label: "關於" },
 ];
 
+// 草稿頁全站沒有任何連結，只能手打網址——結果是作者自己也找不到它。
+// 本機開發時補一個入口；production 完全不渲染，線上仍然只有知道網址的人進得去。
+const showDrafts = process.env.NODE_ENV === "development";
+
 export function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-page/85 backdrop-blur-md backdrop-saturate-150">
       <div className="mx-auto flex max-w-[820px] items-center gap-6 px-6 py-3.5">
         <Link
           href="/"
-          className="flex items-center gap-2 text-[16px] font-bold tracking-[-0.02em]"
+          className="-my-1.5 flex items-center gap-2 py-1.5 text-[16px] font-bold tracking-[-0.02em]"
         >
           <span className="h-2 w-2 rounded-full bg-soul" aria-hidden />
           {site.name}
@@ -23,14 +27,22 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-ink"
+              className="-my-1.5 py-1.5 transition-colors hover:text-ink"
             >
               {item.label}
             </Link>
           ))}
+          {showDrafts && (
+            <Link
+              href="/drafts"
+              className="-my-1.5 py-1.5 text-soul transition-colors hover:text-ink"
+            >
+              草稿
+            </Link>
+          )}
           <a
             href="/feed.xml"
-            className="transition-colors hover:text-ink"
+            className="-my-1.5 py-1.5 transition-colors hover:text-ink"
             title="RSS"
           >
             RSS

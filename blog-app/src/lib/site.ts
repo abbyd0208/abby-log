@@ -3,7 +3,9 @@ export const site = {
   title: "Abby.log",
   description:
     "用對工具、用對思維、解決實際問題。AI 工作流、設計思維與職涯生活實驗的實踐紀錄。",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://abbylog.vercel.app",
+  // 實際部署的網域有連字號。舊值 abbylog.vercel.app 不存在，環境變數一掉
+  // sitemap／RSS／canonical 就會靜默指向死域名
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://abby-log.vercel.app",
   author: "Abby Ting",
   medium: "https://abby-yl-ting.medium.com/",
   locale: "zh-TW",

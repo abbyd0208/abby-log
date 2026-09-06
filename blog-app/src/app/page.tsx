@@ -69,7 +69,7 @@ export default function Home() {
       <section className="mt-14">
         <div className="flex items-baseline justify-between border-b border-line pb-3">
           <h2 className="text-[15px] font-semibold">最新文章</h2>
-          <Link href="/blog" className="text-[13px] text-soul hover:underline">
+          <Link href="/blog" className="-my-1 py-1 text-[13px] text-soul hover:underline">
             全部文章 →
           </Link>
         </div>

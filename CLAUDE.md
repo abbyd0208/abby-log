@@ -17,6 +17,62 @@
 
 原稿與素材留在 `writing/`：`writing/seeds/<slug>.md`（素材袋）、`writing/archive/<slug>/`（發布前原稿與 HTML 閱讀版）。這兩個目錄不會被 `getAllPosts()` 讀到，只有 `src/content/blog/*.mdx` 才是文章。
 
+## 兩個會自動觸發的審查角色
+
+收工前（Stop hook，設定在 `.claude/settings.json`）會跑兩道閘門。兩道形狀一樣：
+**改過就必須通過才收得了工；通過紀錄記的是當下的內容雜湊，通過後又改會自動重擋**；
+同一個 session 最多重試 2 次，第 3 次停下來交給 Abby，不無限循環。
+
+狀態檔在 `.claude/state/`（被 gitignore）。換機器或重新 clone 會全部重審一次，這是預期的。
+
+### 文章審查角色：`writing-review`
+
+**觸發**：`blog-app/src/content/blog/*.mdx` 有改動、且內文超過 300 字（剛建出來只有 frontmatter 的草稿不審）。
+
+**這個角色要做的第一件事是去 AI 味。** 草稿一產出就自己先審一次，不要等 Abby 開口說「這讀起來很像 AI 寫的」。
+判準去讀本檔的「語氣與人稱」與 `writing/WRITING-PLAYBOOK.md`，下面是最常犯、每次都要掃的六個徵狀：
+
+| 徵狀 | 長什麼樣 |
+|---|---|
+| 對仗與排比 | 「不只是⋯更是⋯」「既要⋯也要⋯」，句子工整到不像講話 |
+| 三段式總結 | 每一節結尾都補一句把剛才講完的再講一次的話 |
+| 轉折詞開頭 | 「然而」「因此」「值得注意的是」連續出現在段落開頭 |
+| 形容詞堆疊 | 「高效」「強大」「顯著提升」，但沒有任何數字或實例 |
+| 結論被泛化 | 從「我這次遇到的狀況」滑成「在當今 AI 時代，我們都應該⋯」 |
+| 沒有第一手細節的建議 | 讀起來對、但作者沒做過，查 log 對不上 |
+
+其餘判準（硬性違規、寫作慣例、改稿紀律、雙讀者視角與 4/5 門檻）在 `.claude/skills/writing-review/SKILL.md`，
+以本檔與 `WRITING-PLAYBOOK.md` 為真相來源，skill 只是把它們整理成檢查順序。
+
+通過後記錄：`.claude/hooks/writing-review-gate.sh pass <路徑>`
+
+> 注意兩個層次不要混淆：`writing-review` skill 是**同一個 agent 輪流用兩種讀者視角自審**，
+> 是收工前的最低門檻；下方「發布前讀者評審流程」要求的**派 2 個獨立 subAgent** 是發布前的較高門檻，
+> `scripts/article-loop.sh` 第 4 步跑的是後者。自審過了不等於複評過了。
+
+### 版面審查角色：`layout-review`
+
+**觸發**：這條分支改過 `blog-app/src` 底下的 `.tsx` 或 `.css`。沒動到畫面的 session 完全不受影響。
+
+**角色設定：資深 UI/UX 設計師，做內容型網站十年以上。** 三個習慣寫在
+`.claude/skills/layout-review/SKILL.md`：先量再說、每個問題指得出是哪一行 code、不重畫別人的設計。
+
+審查分兩層，**機器判得了的一定要跑腳本，不要用眼睛掃**：
+
+1. **量測**（`.claude/skills/layout-review/audit.mjs`，用 playwriter headless 跑）
+   1440 / 1060 / 1059 / 768 / 375 五個寬度掃每條路由，抓橫向溢出、同層元素重疊、
+   有字卻被壓成窄條、`overflow:hidden` 裁掉內容、手機上過小的點擊目標。
+   1060/1059 是 `.post-grid` 兩欄退單欄的斷點，兩側都要量。
+   路由與寬度在 `audit.config.json`；**playwriter 的腳本沙盒收不到環境變數**，不要用 env 傳參數。
+2. **設計判斷**（腳本量不出來的）：視覺階層、對齊與節奏、斷點行為、狀態涵蓋、可讀性、一致性。
+   這個站沒有深色模式，不用查。
+
+動到 `src/components/` 的共用元件時，先 grep「還有誰在用」，每個呼叫端都要量——
+2026-08-25 那個被壓成 1px 的標題就是第六個呼叫端才爆的。
+
+通過門檻：量測**零 finding**，設計判斷沒有「壞掉」等級的問題（風格偏好不算）。
+通過後記錄：`.claude/hooks/layout-review-gate.sh pass <路徑>`
+
 ## 專案結構的兩條硬規則
 
 **一、npm 指令一律先 `cd blog-app`。不要在 repo 根建 `package.json` 或 lockfile。**

@@ -8,10 +8,10 @@ export function Footer() {
           © {new Date().getFullYear()} {site.author} · {site.name}
         </p>
         <div className="flex gap-4 sm:ml-auto">
-          <a href={site.medium} className="hover:text-ink-2">
+          <a href={site.medium} className="-my-1 py-1 hover:text-ink-2">
             Medium
           </a>
-          <a href="/feed.xml" className="hover:text-ink-2">
+          <a href="/feed.xml" className="-my-1 py-1 hover:text-ink-2">
             RSS
           </a>
         </div>

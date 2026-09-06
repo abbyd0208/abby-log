@@ -1,0 +1,19 @@
+{
+  "base": "http://localhost:3000",
+  "widths": [
+    1440,
+    1060,
+    1059,
+    768,
+    375
+  ],
+  "_widths_note": "1060/1059 是 .post-grid 兩欄退單欄的斷點，兩側都要量",
+  "routes": [
+    "/",
+    "/blog",
+    "/about",
+    "/glossary",
+    "/drafts"
+  ],
+  "_routes_note": "文章內頁與草稿頁要另外指定實際 slug，兩欄版型只有標題數 >= 3 才啟用"
+}
